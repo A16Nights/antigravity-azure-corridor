@@ -1,3 +1,4 @@
+import { checkGithubUpdate } from "../../lib/update-checker.mjs";
 import http from "node:http";
 import fs from "node:fs";
 import path from "node:path";
@@ -50,6 +51,14 @@ const server = http.createServer(async (req, res) => {
   try {
     const url = new URL(req.url || "/", `http://${HOST}:${PORT}`);
     const pathname = url.pathname;
+
+    if (req.method === "GET" && pathname === "/api/check-update") {
+      const force = new URL(req.url, "http://127.0.0.1").searchParams.get("force") === "1";
+      const pluginRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
+      const info = await checkGithubUpdate({ pluginRoot, repo: "A16Nights/antigravity-azure-corridor", force });
+      sendJson(res, 200, info);
+      return;
+    }
 
     if (req.method === "GET" && pathname === "/healthz") {
       return sendJson(res, 200, { ok: true, service: "azure-corridor" });

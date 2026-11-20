@@ -2,7 +2,7 @@
   "$schema": "https://antigravity.google/schemas/v1/plugin.json",
   "name": "azure-corridor",
   "displayName": "苍蓝回廊",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "logo": "assets/logo.svg",
   "description": "苍蓝回廊（Azure Corridor）：Antigravity 原生会话与工作区管理插件。整合全文检索、项目分组、工作区归档、收藏、稍后回看、优先级、标签备注、批量管理与独立归档箱。",
   "suggestedPrompts": [

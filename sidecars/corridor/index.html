@@ -1187,6 +1187,7 @@
     btn.textContent = "检查更新";
     btn.title = "点击检查 GitHub 最新版本";
     const host =
+      document.querySelector(".top-actions") ||
       document.querySelector(".header-actions") ||
       document.querySelector("header .row") ||
       document.querySelector(".header .actions") ||

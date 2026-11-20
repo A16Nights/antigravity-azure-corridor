@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>苍蓝回廊 · Azure Corridor</title>
+  <style>
+    :root {
+      --bg: #0b1120;
+      --bg-card: #111827;
+      --bg-elev: #1e293b;
+      --bg-hover: #1b2538;
+      --border: #24324a;
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.14);
+      --green: #34d399;
+      --amber: #fbbf24;
+      --rose: #fb7185;
+      --purple: #a78bfa;
+      --renamed-color: #7dd3fc;
+      --radius: 10px;
+    }
+    [data-theme="light"] {
+      --bg: #f1f5f9;
+      --bg-card: #ffffff;
+      --bg-elev: #e2e8f0;
+      --bg-hover: #f8fafc;
+      --border: #cbd5e1;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --accent: #0284c7;
+      --accent-soft: rgba(2, 132, 199, 0.12);
+      --green: #059669;
+      --amber: #d97706;
+      --rose: #e11d48;
+      --purple: #7c3aed;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    .app { max-width: 1120px; margin: 0 auto; padding: 12px 14px 28px; }
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      flex-wrap: wrap; padding-bottom: 10px; border-bottom: 1px solid var(--border);
+    }
+    .brand { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px; }
+    .brand-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: linear-gradient(135deg, #7dd3fc, #38bdf8);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.65);
+    }
+    .pill-count {
+      font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+      background: var(--accent-soft); color: var(--accent);
+    }
+    .top-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    button, select, input, textarea { font-family: inherit; font-size: 12px; color: var(--text); }
+    .btn {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px;
+      padding: 5px 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .btn:hover { background: var(--bg-hover); border-color: var(--accent); }
+    .btn:active { transform: translateY(1px); }
+    .btn-primary { background: var(--accent); color: #06131f; border-color: transparent; font-weight: 600; }
+    .btn-primary:hover { filter: brightness(1.08); background: var(--accent); }
+    .btn-danger { color: var(--rose); border-color: rgba(251, 113, 133, 0.4); }
+    .btn-danger:hover { background: rgba(251, 113, 133, 0.12); border-color: var(--rose); }
+    .btn-sm { padding: 3px 7px; font-size: 11px; border-radius: 6px; }
+    .btn-active { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+
+    .tabs { display: flex; gap: 6px; margin-top: 10px; border-bottom: 1px solid var(--border); }
+    .tab {
+      background: transparent; border: none; border-bottom: 2px solid transparent;
+      border-radius: 6px 6px 0 0;
+      padding: 7px 12px; cursor: pointer; color: var(--text-muted); font-weight: 600; font-size: 13px;
+      transition: color 0.15s, background 0.15s, border-color 0.15s;
+    }
+    .tab:hover { color: var(--text); background: var(--accent-soft); }
+    .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .btn-icon { width: 28px; height: 26px; padding: 0; justify-content: center; font-size: 14px; }
+    @keyframes spinOnce { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    .spinning { animation: spinOnce 0.45s ease; }
+
+    .toolbar { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+    .toolbar-row { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+    .search-box {
+      flex: 1; min-width: 180px; background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 8px; padding: 6px 10px; outline: none;
+    }
+    .search-box:focus { border-color: var(--accent); }
+    select.ctrl {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px;
+      padding: 5px 8px; outline: none; cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    select.ctrl:hover, select.ctrl:focus { background: var(--bg-hover); border-color: var(--accent); }
+    .chip {
+      padding: 4px 9px; border-radius: 999px; border: 1px solid var(--border);
+      background: var(--bg-card); color: var(--text-muted); cursor: pointer; font-size: 11px;
+      transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.1s;
+    }
+    .chip:hover { background: var(--bg-hover); border-color: var(--accent); color: var(--text); }
+    .chip:active { transform: translateY(1px); }
+    .chip.active { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); font-weight: 600; }
+
+    .batch-bar {
+      display: none; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;
+      margin-top: 8px; padding: 8px 10px; border-radius: var(--radius);
+      background: var(--accent-soft); border: 1px solid var(--accent);
+    }
+    .batch-bar.show { display: flex; }
+
+    .list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+    .card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 10px 12px; transition: border-color 0.15s, background 0.15s;
+    }
+    .card:hover { border-color: rgba(56, 189, 248, 0.55); }
+    .card.pinned { border-left: 3px solid var(--accent); }
+    .card.batch-selectable { cursor: pointer; user-select: none; }
+    .card.selected { border-color: var(--accent); background: rgba(56, 189, 248, 0.08); }
+    .card-head { display: flex; align-items: flex-start; gap: 8px; justify-content: space-between; }
+    .card-left { display: flex; align-items: flex-start; gap: 8px; min-width: 0; flex: 1; }
+    .card-title-wrap { min-width: 0; flex: 1; }
+    .card-title-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .card-title { font-weight: 600; font-size: 13.5px; cursor: pointer; color: var(--text); word-break: break-word; }
+    .card-title.renamed { color: var(--renamed-color); }
+    .card-title:hover { color: var(--accent); text-decoration: underline; }
+    .inline-edit-btn {
+      background: transparent; border: none; color: var(--text-muted); cursor: pointer;
+      padding: 1px 4px; border-radius: 5px; font-size: 12px; opacity: 0.65;
+      transition: opacity 0.15s, color 0.15s, background 0.15s;
+    }
+    .inline-edit-btn:hover { opacity: 1; color: var(--accent); background: var(--accent-soft); }
+    .inline-title-input {
+      flex: 1; min-width: 140px; background: var(--bg); border: 1px solid var(--accent);
+      border-radius: 6px; padding: 3px 7px; font-size: 13px; font-weight: 600;
+      color: var(--text); outline: none;
+    }
+    .swatch-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+    .swatch {
+      width: 24px; height: 24px; border-radius: 50%; border: 2px solid transparent;
+      cursor: pointer; transition: transform 0.15s, border-color 0.15s;
+    }
+    .swatch:hover { transform: scale(1.1); }
+    .swatch.active { border-color: var(--text); }
+    .meta-row {
+      display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 4px;
+      font-size: 11px; color: var(--text-muted);
+    }
+    .badge { padding: 1px 6px; border-radius: 5px; font-size: 11px; background: var(--bg-elev); color: var(--text-muted); }
+    .badge-grp { color: var(--accent); background: var(--accent-soft); }
+    .badge-run { color: var(--green); background: rgba(52, 211, 153, 0.14); }
+    .badge-p1 { color: #fecdd3; background: rgba(225, 29, 72, 0.35); }
+    .badge-p2 { color: #fde68a; background: rgba(217, 119, 6, 0.32); }
+    .badge-tag { color: var(--purple); background: rgba(167, 139, 250, 0.14); }
+    .note-box {
+      margin-top: 6px; padding: 5px 8px; border-radius: 6px; font-size: 11.5px;
+      background: rgba(148, 163, 184, 0.08); color: var(--text-muted); white-space: pre-wrap;
+    }
+    .card-actions { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; margin-top: 8px; }
+    .icon-btn {
+      background: transparent; border: 1px solid var(--border); border-radius: 6px;
+      padding: 2px 7px; cursor: pointer; font-size: 11px; color: var(--text-muted);
+      transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.1s;
+    }
+    .icon-btn:hover { background: var(--bg-hover); border-color: var(--accent); color: var(--text); }
+    .icon-btn:active { transform: translateY(1px); }
+    .icon-btn.on-fav { color: var(--amber); border-color: rgba(251, 191, 36, 0.5); background: rgba(251, 191, 36, 0.1); }
+    .icon-btn.on-pin { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
+    .icon-btn.on-rev { color: var(--purple); border-color: rgba(167, 139, 250, 0.5); background: rgba(167, 139, 250, 0.1); }
+
+    .grp-card {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 10px 12px;
+    }
+    .empty {
+      text-align: center; padding: 36px 14px; color: var(--text-muted);
+      border: 1px dashed var(--border); border-radius: var(--radius); margin-top: 10px;
+    }
+
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(2, 6, 23, 0.72);
+      display: none; align-items: center; justify-content: center; padding: 14px; z-index: 99;
+    }
+    .modal-backdrop.show { display: flex; }
+    .modal {
+      width: 100%; max-width: 440px; background: var(--bg-card);
+      border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+    }
+    .modal h3 { margin: 0 0 10px; font-size: 14px; }
+    .field { margin-bottom: 10px; }
+    .field label { display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
+    .field input, .field select, .field textarea {
+      width: 100%; background: var(--bg); border: 1px solid var(--border);
+      border-radius: 8px; padding: 6px 8px; outline: none;
+    }
+    .field textarea { min-height: 76px; resize: vertical; }
+    .modal-foot { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
+
+    .toast {
+      position: fixed; bottom: 14px; right: 14px; background: var(--bg-elev);
+      border: 1px solid var(--accent); color: var(--text); padding: 7px 12px;
+      border-radius: 8px; font-size: 12px; opacity: 0; pointer-events: none;
+      transition: opacity 0.2s; z-index: 120;
+    }
+    .toast.show { opacity: 1; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="topbar">
+      <div class="brand">
+        <span class="brand-dot"></span>
+        <span>苍蓝回廊</span>
+        <span class="pill-count" id="activeCountPill">0 活跃</span>
+      </div>
+      <div class="top-actions">
+        <button class="btn btn-sm btn-icon" id="btnRefresh" title="刷新">↻</button>
+        <button class="btn btn-sm" id="btnCopyUrl">复制全屏地址</button>
+        <button class="btn btn-sm btn-icon" id="btnTheme" title="切换暗色/亮色主题">🌙</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="sessions">会话回廊 (<span id="tabSessionsCount">0</span>)</button>
+      <button class="tab" data-tab="groups">自定义分组 (<span id="tabGroupsCount">0</span>)</button>
+      <button class="tab" data-tab="archive">归档箱 (<span id="tabArchiveCount">0</span>)</button>
+      <button class="tab" data-tab="settings">设置</button>
+    </div>
+
+    <div class="toolbar" id="sessionToolbar">
+      <div class="toolbar-row">
+        <input class="search-box" id="searchInput" placeholder="搜索标题 / ID / 分组 / 标签 / 备注 / 对话正文 (FTS5)..." />
+        <button class="btn btn-sm" id="btnBatchToggle">批量管理</button>
+      </div>
+      <div class="toolbar-row">
+        <select class="ctrl" id="groupFilter"><option value="all">全部分组</option></select>
+        <select class="ctrl" id="tagFilter"><option value="all">全部标签</option></select>
+        <select class="ctrl" id="sortSelect">
+          <option value="updated_desc">最近更新</option>
+          <option value="updated_asc">最早更新</option>
+          <option value="priority_asc">优先级 (1→5)</option>
+          <option value="title_asc">标题 A→Z</option>
+        </select>
+      </div>
+      <div class="toolbar-row">
+        <span class="chip active" data-quick="all">全部</span>
+        <span class="chip" data-quick="favorite">★ 收藏</span>
+        <span class="chip" data-quick="review">🔖 稍后回看</span>
+        <span class="chip" data-quick="running">● 运行中</span>
+      </div>
+    </div>
+
+    <div class="toolbar" id="groupToolbar" style="display:none;">
+      <div class="toolbar-row">
+        <input class="search-box" id="newGroupName" placeholder="输入新分组名称（例如：插件开发、日常杂谈、战地）..." />
+        <button class="btn btn-primary" id="btnCreateGroup">+ 新建分组</button>
+      </div>
+    </div>
+
+    <div class="batch-bar" id="batchBar">
+      <div>已选 <strong id="selectedCount">0</strong> 项</div>
+      <div class="toolbar-row" id="batchActions"></div>
+    </div>
+
+    <div id="contentArea" class="list"></div>
+  </div>
+
+  <!-- 编辑会话信息弹窗 -->
+  <div class="modal-backdrop" id="editModal">
+    <div class="modal">
+      <h3>编辑会话信息</h3>
+      <div class="field">
+        <label>自定义显示标题（留空恢复默认标题）</label>
+        <input id="editTitle" placeholder="输入新标题..." />
+      </div>
+      <div class="field">
+        <label>优先级</label>
+        <select id="editPriority">
+          <option value="1">1 · 最高</option>
+          <option value="2">2 · 高</option>
+          <option value="3">3 · 普通</option>
+          <option value="4">4 · 低</option>
+          <option value="5">5 · 最低</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>标签（逗号分隔，最多 20 个）</label>
+        <input id="editTags" placeholder="例如：插件, 待跟进, 重要" />
+      </div>
+      <div class="field">
+        <label>备注</label>
+        <textarea id="editNote" placeholder="记录这段对话的要点、进度或结论..."></textarea>
+      </div>
+      <div class="modal-foot">
+        <button class="btn" id="editCancel">取消</button>
+        <button class="btn btn-primary" id="editSave">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 分配自定义分组弹窗 -->
+  <div class="modal-backdrop" id="groupModal">
+    <div class="modal">
+      <h3>分配到自定义分组</h3>
+      <p id="groupModalDesc" style="margin: 0 0 10px; color: var(--text-muted);"></p>
+      <div class="field">
+        <label>选择已有分组</label>
+        <select id="groupModalSelect"></select>
+      </div>
+      <div class="field">
+        <label>或直接输入新分组名（留空则使用上面选中的分组）</label>
+        <input id="groupModalNew" placeholder="例如：插件制作" />
+      </div>
+      <div class="modal-foot">
+        <button class="btn" id="groupModalClear" style="margin-right:auto;">移出分组</button>
+        <button class="btn" id="groupModalCancel">取消</button>
+        <button class="btn btn-primary" id="groupModalConfirm">确认</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 设置弹窗 -->
+  <div class="modal-backdrop" id="settingsModal">
+    <div class="modal">
+      <h3>⚙ 苍蓝回廊设置</h3>
+      <div class="field">
+        <label>重命名后的会话标题颜色</label>
+        <div style="display:flex; align-items:center; gap:10px; margin-top:4px;">
+          <input type="color" id="renamedColorPicker" style="width:42px; height:30px; padding:2px; cursor:pointer;" />
+          <span id="renamedColorPreview" style="font-weight:600; font-size:13.5px;">示例：已重命名的会话标题</span>
+        </div>
+        <div class="swatch-row" id="colorSwatches"></div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn" id="settingsReset" style="margin-right:auto;">恢复默认</button>
+        <button class="btn" id="settingsCancel">取消</button>
+        <button class="btn btn-primary" id="settingsSave">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 通用输入/确认弹窗（替代 Webview 中被禁用的 prompt / confirm） -->
+  <div class="modal-backdrop" id="dialogModal">
+    <div class="modal">
+      <h3 id="dialogTitle">提示</h3>
+      <p id="dialogDesc" style="margin: 0 0 10px; color: var(--text-muted); display:none;"></p>
+      <div class="field" id="dialogInputWrap" style="display:none;">
+        <input id="dialogInput" placeholder="" />
+      </div>
+      <div class="modal-foot">
+        <button class="btn" id="dialogCancel">取消</button>
+        <button class="btn btn-primary" id="dialogConfirm">确认</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 归档箱彻底删除二次确认弹窗 -->
+  <div class="modal-backdrop" id="deleteModal">
+    <div class="modal">
+      <h3 style="color: var(--rose);">确认彻底删除已归档会话？</h3>
+      <p id="deleteDesc" style="margin: 0 0 10px; color: var(--text-muted);"></p>
+      <label style="display: flex; align-items: center; gap: 6px; font-size: 12px; cursor: pointer;">
+        <input type="checkbox" id="deletePurgeDisk" />
+        <span>同时清理本机磁盘中的会话文件（conversations/*.db 与 brain 目录，不可恢复）</span>
+      </label>
+      <div class="modal-foot">
+        <button class="btn" id="deleteCancel">取消</button>
+        <button class="btn btn-danger" id="deleteConfirm">确认删除</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const state = {
+      tab: "sessions",
+      query: "",
+      groupFilter: "all",
+      tagFilter: "all",
+      quickFilter: "all",
+      sort: "updated_desc",
+      batchMode: false,
+      selected: new Set(),
+      data: { sessions: [], archivedSessions: [], groups: [], allTags: [] },
+      editingId: null,
+      inlineEditingId: null,
+      groupingIds: [],
+      deletingIds: [],
+      renamedColor: "#7dd3fc"
+    };
+
+    const $ = (id) => document.getElementById(id);
+
+    function showToast(msg) {
+      const el = $("toast");
+      el.textContent = msg;
+      el.classList.add("show");
+      clearTimeout(el._t);
+      el._t = setTimeout(() => el.classList.remove("show"), 2200);
+    }
+
+    function esc(s) {
+      return String(s || "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    }
+
+    function fmtTime(iso) {
+      if (!iso) return "";
+      const d = new Date(iso);
+      if (isNaN(d.getTime())) return iso.slice(0, 16);
+      const diff = (Date.now() - d.getTime()) / 1000;
+      if (diff < 60) return "刚刚";
+      if (diff < 3600) return `${Math.floor(diff / 60)} 分钟前`;
+      if (diff < 86400) return `${Math.floor(diff / 3600)} 小时前`;
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      const h = String(d.getHours()).padStart(2, "0");
+      const min = String(d.getMinutes()).padStart(2, "0");
+      return `${m}-${day} ${h}:${min}`;
+    }
+
+    async function fetchState() {
+      const params = new URLSearchParams();
+      if (state.query.trim()) params.set("q", state.query.trim());
+      const res = await fetch(`/api/state?${params.toString()}`);
+      const json = await res.json();
+      if (json.ok) {
+        state.data = json;
+        updateFilterOptions();
+        render();
+      }
+    }
+
+    function updateFilterOptions() {
+      $("activeCountPill").textContent = `${state.data.activeCount || 0} 活跃`;
+      $("tabSessionsCount").textContent = state.data.activeCount || 0;
+      $("tabGroupsCount").textContent = (state.data.groups || []).length;
+      $("tabArchiveCount").textContent = state.data.archivedCount || 0;
+
+      const grpSel = $("groupFilter");
+      const prevGrp = state.groupFilter;
+      grpSel.innerHTML = `<option value="all">全部分组</option><option value="unscoped">未分组</option>` +
+        (state.data.groups || []).map((g) =>
+          `<option value="${esc(g.id)}">${esc(g.name)} (${g.activeSessionCount})</option>`
+        ).join("");
+      grpSel.value = [...grpSel.options].some((o) => o.value === prevGrp) ? prevGrp : "all";
+      state.groupFilter = grpSel.value;
+
+      const tagSel = $("tagFilter");
+      const prevTag = state.tagFilter;
+      tagSel.innerHTML = `<option value="all">全部标签</option>` +
+        (state.data.allTags || []).map((t) => `<option value="${esc(t)}"># ${esc(t)}</option>`).join("");
+      tagSel.value = [...tagSel.options].some((o) => o.value === prevTag) ? prevTag : "all";
+      state.tagFilter = tagSel.value;
+    }
+
+    function getFilteredSessions(list) {
+      let out = [...list];
+      if (state.groupFilter === "unscoped") out = out.filter((s) => !s.groupId);
+      else if (state.groupFilter !== "all") out = out.filter((s) => s.groupId === state.groupFilter);
+      if (state.tagFilter !== "all") out = out.filter((s) => s.tags.includes(state.tagFilter));
+      if (state.quickFilter === "favorite") out = out.filter((s) => s.favorite);
+      if (state.quickFilter === "review") out = out.filter((s) => s.reviewLater);
+      if (state.quickFilter === "running") out = out.filter((s) => s.isRunning);
+
+      out.sort((a, b) => {
+        if (state.tab === "sessions" && a.pinned !== b.pinned) return a.pinned ? -1 : 1;
+        if (state.sort === "updated_asc") return String(a.lastModifiedTime).localeCompare(String(b.lastModifiedTime));
+        if (state.sort === "priority_asc") return (a.priority - b.priority) || String(b.lastModifiedTime).localeCompare(String(a.lastModifiedTime));
+        if (state.sort === "title_asc") return a.title.localeCompare(b.title, "zh-CN");
+        return String(b.lastModifiedTime).localeCompare(String(a.lastModifiedTime));
+      });
+      return out;
+    }
+
+    function renderBatchBar(visibleList) {
+      const bar = $("batchBar");
+      const show = state.batchMode && state.tab !== "groups";
+      bar.classList.toggle("show", show);
+      if (!show) return;
+      $("selectedCount").textContent = state.selected.size;
+      const act = $("batchActions");
+      if (state.tab === "sessions") {
+        act.innerHTML = `
+          <button class="btn btn-sm" id="bSelectAll">全选当前 (${visibleList.length})</button>
+          <button class="btn btn-sm" id="bClear">清空</button>
+          <button class="btn btn-sm" id="bGroup">批量分组</button>
+          <button class="btn btn-sm" id="bPriority">改优先级</button>
+          <button class="btn btn-sm" id="bFav">★ 收藏</button>
+          <button class="btn btn-sm" id="bAddTag">+ 标签</button>
+          <button class="btn btn-sm" id="bRemoveTag">- 移标签</button>
+          <button class="btn btn-sm btn-primary" id="bArchive">批量归档</button>
+        `;
+        $("bSelectAll").onclick = () => { visibleList.forEach((s) => state.selected.add(s.id)); render(); };
+        $("bClear").onclick = () => { state.selected.clear(); render(); };
+        $("bGroup").onclick = () => {
+          if (!state.selected.size) return showToast("请先勾选会话");
+          openGroupModal([...state.selected]);
+        };
+        $("bPriority").onclick = async () => {
+          if (!state.selected.size) return showToast("请先勾选会话");
+          const val = await openInputDialog({
+            title: "批量设置优先级",
+            desc: `为已选中的 ${state.selected.size} 条会话设置优先级（输入 1~5，1 最高，5 最低）：`,
+            placeholder: "例如：1",
+            defaultValue: "2"
+          });
+          const p = Number(val);
+          if (!val || !Number.isInteger(p) || p < 1 || p > 5) return;
+          await postApi("/api/session/batch", { ids: [...state.selected], action: "priority", payload: { priority: p } });
+          showToast(`已将 ${state.selected.size} 条会话设为 P${p}`);
+          await fetchState();
+        };
+        $("bFav").onclick = async () => {
+          if (!state.selected.size) return showToast("请先勾选会话");
+          await postApi("/api/session/batch", { ids: [...state.selected], action: "favorite", payload: { value: true } });
+          showToast(`已收藏 ${state.selected.size} 条会话`);
+          await fetchState();
+        };
+        $("bAddTag").onclick = async () => {
+          if (!state.selected.size) return showToast("请先勾选会话");
+          const tag = await openInputDialog({
+            title: "批量添加标签",
+            desc: `将为已选中的 ${state.selected.size} 条会话添加标签：`,
+            placeholder: "输入标签名（例如：重要、待跟进）"
+          });
+          if (!tag || !tag.trim()) return;
+          await postApi("/api/session/batch", { ids: [...state.selected], action: "addTag", payload: { tag: tag.trim() } });
+          showToast(`已为 ${state.selected.size} 条会话添加标签`);
+          await fetchState();
+        };
+        $("bRemoveTag").onclick = async () => {
+          if (!state.selected.size) return showToast("请先勾选会话");
+          const tag = await openInputDialog({
+            title: "批量移除标签",
+            desc: `将从已选中的 ${state.selected.size} 条会话中移除指定标签：`,
+            placeholder: "输入要移除的标签名"
+          });
+          if (!tag || !tag.trim()) return;
+          await postApi("/api/session/batch", { ids: [...state.selected], action: "removeTag", payload: { tag: tag.trim() } });
+          showToast(`已从 ${state.selected.size} 条会话移除标签`);
+          await fetchState();
+        };
+        $("bArchive").onclick = async () => {
+          if (!state.selected.size) return showToast("请先勾选会话");
+          await postApi("/api/session/batch", { ids: [...state.selected], action: "archive" });
+          showToast(`已归档 ${state.selected.size} 条会话`);
+          state.selected.clear();
+          await fetchState();
+        };
+      } else if (state.tab === "archive") {
+        act.innerHTML = `
+          <button class="btn btn-sm" id="bSelectAll">全选当前 (${visibleList.length})</button>
+          <button class="btn btn-sm" id="bClear">清空</button>
+          <button class="btn btn-sm btn-primary" id="bRestore">批量恢复</button>
+          <button class="btn btn-sm btn-danger" id="bDelete">批量删除</button>
+        `;
+        $("bSelectAll").onclick = () => { visibleList.forEach((s) => state.selected.add(s.id)); render(); };
+        $("bClear").onclick = () => { state.selected.clear(); render(); };
+        $("bRestore").onclick = async () => {
+          if (!state.selected.size) return showToast("请先勾选会话");
+          await postApi("/api/session/batch", { ids: [...state.selected], action: "unarchive" });
+          showToast(`已恢复 ${state.selected.size} 条会话`);
+          state.selected.clear();
+          await fetchState();
+        };
+        $("bDelete").onclick = () => {
+          if (!state.selected.size) return showToast("请先勾选会话");
+          openDeleteModal([...state.selected]);
+        };
+      }
+    }
+
+    function render() {
+      $("sessionToolbar").style.display = (state.tab === "sessions" || state.tab === "archive") ? "flex" : "none";
+      $("groupToolbar").style.display = state.tab === "groups" ? "flex" : "none";
+      $("btnBatchToggle").classList.toggle("btn-active", state.batchMode);
+      const area = $("contentArea");
+
+      if (state.tab === "settings") {
+        $("batchBar").classList.remove("show");
+        area.innerHTML = `
+          <div class="card">
+            <div style="font-weight:700; font-size:14px; margin-bottom:10px;">显示设置</div>
+            <div class="field">
+              <label>重命名后的会话标题颜色</label>
+              <div style="display:flex; align-items:center; gap:10px; margin-top:6px;">
+                <input type="color" id="tabColorPicker" value="${esc(state.renamedColor)}" style="width:42px; height:30px; padding:2px; cursor:pointer;" />
+                <span id="tabColorPreview" style="font-weight:600; font-size:13.5px; color:${esc(state.renamedColor)};">示例：已重命名的会话标题</span>
+                <button class="btn btn-sm" id="tabColorReset" style="margin-left:auto;">恢复默认</button>
+              </div>
+              <div class="swatch-row" id="tabColorSwatches" style="margin-top:10px;">
+                ${PRESET_COLORS.map((c) => `<span class="swatch ${c === state.renamedColor ? "active" : ""}" data-color="${c}" style="background:${c};"></span>`).join("")}
+              </div>
+            </div>
+          </div>
+        `;
+        const saveColor = (c) => {
+          applyRenamedColor(c);
+          localStorage.setItem("azure-corridor-renamed-color", c);
+          $("tabColorPicker").value = c;
+          $("tabColorPreview").style.color = c;
+          area.querySelectorAll("#tabColorSwatches .swatch").forEach((s) => s.classList.toggle("active", s.dataset.color === c));
+        };
+        $("tabColorPicker").oninput = (e) => saveColor(e.target.value);
+        area.querySelectorAll("#tabColorSwatches .swatch").forEach((s) => {
+          s.onclick = () => { saveColor(s.dataset.color); showToast("已更新标题颜色"); };
+        });
+        $("tabColorReset").onclick = () => { saveColor("#7dd3fc"); showToast("已恢复默认颜色"); };
+        return;
+      }
+
+      if (state.tab === "groups") {
+        $("batchBar").classList.remove("show");
+        const list = state.data.groups || [];
+        if (!list.length) {
+          area.innerHTML = `<div class="empty">还没有自定义分组~ 在上方输入名称新建一个吧</div>`;
+          return;
+        }
+        area.innerHTML = list.map((g) => `
+          <div class="grp-card">
+            <div style="min-width:0; flex:1;">
+              <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                <strong>${esc(g.name)}</strong>
+                ${g.archived ? `<span class="badge">已归档</span>` : ""}
+                <span class="badge badge-grp">${g.sessionCount} 会话</span>
+              </div>
+            </div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+              <button class="btn btn-sm" data-grp-view="${esc(g.id)}">查看</button>
+              <button class="btn btn-sm" data-grp-rename="${esc(g.id)}" data-grp-name="${esc(g.name)}">重命名</button>
+              <button class="btn btn-sm ${g.archived ? "btn-primary" : ""}" data-grp-arch="${esc(g.id)}" data-grp-isarch="${g.archived ? "1" : "0"}">
+                ${g.archived ? "恢复" : "归档"}
+              </button>
+              <button class="btn btn-sm btn-danger" data-grp-del="${esc(g.id)}" data-grp-name="${esc(g.name)}">删除</button>
+            </div>
+          </div>
+        `).join("");
+
+        area.querySelectorAll("[data-grp-view]").forEach((btn) => {
+          btn.onclick = () => {
+            state.groupFilter = btn.getAttribute("data-grp-view");
+            $("groupFilter").value = state.groupFilter;
+            document.querySelectorAll(".tab").forEach((x) => x.classList.toggle("active", x.getAttribute("data-tab") === "sessions"));
+            state.tab = "sessions";
+            render();
+          };
+        });
+        area.querySelectorAll("[data-grp-rename]").forEach((btn) => {
+          btn.onclick = async () => {
+            const id = btn.getAttribute("data-grp-rename");
+            const oldName = btn.getAttribute("data-grp-name");
+            const next = await openInputDialog({
+              title: "重命名分组",
+              placeholder: "输入新的分组名称",
+              defaultValue: oldName
+            });
+            if (!next || !next.trim() || next.trim() === oldName) return;
+            await postApi("/api/group/rename", { groupId: id, name: next.trim() });
+            showToast("已重命名分组");
+            await fetchState();
+          };
+        });
+        area.querySelectorAll("[data-grp-arch]").forEach((btn) => {
+          btn.onclick = async () => {
+            const id = btn.getAttribute("data-grp-arch");
+            const isArch = btn.getAttribute("data-grp-isarch") === "1";
+            await postApi("/api/group/archive", { groupId: id, archived: !isArch });
+            showToast(isArch ? "已恢复分组" : "已归档分组及组内会话");
+            await fetchState();
+          };
+        });
+        area.querySelectorAll("[data-grp-del]").forEach((btn) => {
+          btn.onclick = async () => {
+            const id = btn.getAttribute("data-grp-del");
+            const name = btn.getAttribute("data-grp-name");
+            const ok = await openConfirmDialog({
+              title: "删除自定义分组",
+              desc: `确定删除分组「${name}」吗？（组内会话不会被删除，会自动回到未分组）`,
+              danger: true
+            });
+            if (!ok) return;
+            await postApi("/api/group/delete", { groupId: id });
+            showToast("已删除分组");
+            await fetchState();
+          };
+        });
+        return;
+      }
+
+      const source = state.tab === "archive" ? (state.data.archivedSessions || []) : (state.data.sessions || []);
+      const visible = getFilteredSessions(source);
+      renderBatchBar(visible);
+
+      if (!visible.length) {
+        area.innerHTML = `<div class="empty">${state.tab === "archive" ? "归档箱是空的~" : "没有匹配当前条件的会话"}</div>`;
+        return;
+      }
+
+      area.innerHTML = visible.map((s) => `
+        <div class="card ${s.pinned ? "pinned" : ""} ${state.batchMode ? "batch-selectable" : ""} ${state.batchMode && state.selected.has(s.id) ? "selected" : ""}" data-card-id="${esc(s.id)}">
+          <div class="card-head">
+            <div class="card-left">
+              ${state.batchMode ? `<input type="checkbox" data-chk="${esc(s.id)}" ${state.selected.has(s.id) ? "checked" : ""} />` : ""}
+              <div class="card-title-wrap">
+                <div class="card-title-row">
+                  ${state.inlineEditingId === s.id ? `
+                    <input class="inline-title-input" data-inline-input="${esc(s.id)}" value="${esc(s.customTitle || s.title)}" placeholder="留空恢复默认标题..." />
+                  ` : `
+                    <div class="card-title ${s.customTitle ? "renamed" : ""}" data-open="${esc(s.id)}" title="点击切换到该会话">${s.pinned ? "📌 " : ""}${esc(s.title)}</div>
+                    <button class="inline-edit-btn" data-inline-edit="${esc(s.id)}" title="快速重命名">✎</button>
+                  `}
+                </div>
+                <div class="meta-row">
+                  ${s.isRunning ? `<span class="badge badge-run">● 运行中</span>` : ""}
+                  <span class="badge ${s.groupId ? "badge-grp" : ""}">${esc(s.groupName)}</span>
+                  ${s.priority <= 2 ? `<span class="badge badge-p${s.priority}">P${s.priority}</span>` : `<span class="badge">P${s.priority}</span>`}
+                  <span>${s.stepCount} 步</span>
+                  <span>${fmtTime(s.lastModifiedTime)}</span>
+                </div>
+                ${s.tags.length ? `<div class="meta-row">${s.tags.map((t) => `<span class="badge badge-tag">#${esc(t)}</span>`).join("")}</div>` : ""}
+                ${s.note ? `<div class="note-box">${esc(s.note)}</div>` : ""}
+              </div>
+            </div>
+          </div>
+          <div class="card-actions">
+            ${state.tab === "sessions" ? `
+              <button class="icon-btn ${s.pinned ? "on-pin" : ""}" data-act="pin" data-id="${esc(s.id)}">置顶</button>
+              <button class="icon-btn ${s.favorite ? "on-fav" : ""}" data-act="fav" data-id="${esc(s.id)}">★ 收藏</button>
+              <button class="icon-btn ${s.reviewLater ? "on-rev" : ""}" data-act="rev" data-id="${esc(s.id)}">🔖 回看</button>
+              <button class="icon-btn" data-act="group" data-id="${esc(s.id)}">分组</button>
+              <button class="icon-btn" data-act="edit" data-id="${esc(s.id)}">编辑</button>
+              <button class="icon-btn" data-act="copy" data-id="${esc(s.id)}">复制ID</button>
+              <button class="icon-btn" data-act="archive" data-id="${esc(s.id)}">归档</button>
+            ` : `
+              <button class="icon-btn" data-act="edit" data-id="${esc(s.id)}">编辑</button>
+              <button class="icon-btn" data-act="restore" data-id="${esc(s.id)}">恢复</button>
+              <button class="icon-btn btn-danger" data-act="delete" data-id="${esc(s.id)}">彻底删除</button>
+            `}
+          </div>
+        </div>
+      `).join("");
+
+      area.querySelectorAll("[data-chk]").forEach((chk) => {
+        chk.onclick = (e) => e.stopPropagation();
+        chk.onchange = () => {
+          const id = chk.getAttribute("data-chk");
+          if (chk.checked) state.selected.add(id);
+          else state.selected.delete(id);
+          render();
+        };
+      });
+
+      if (state.batchMode) {
+        area.querySelectorAll("[data-card-id]").forEach((card) => {
+          card.onclick = (e) => {
+            if (e.target.closest("button") || e.target.closest("input")) return;
+            const id = card.getAttribute("data-card-id");
+            if (state.selected.has(id)) state.selected.delete(id);
+            else state.selected.add(id);
+            render();
+          };
+        });
+      }
+
+      area.querySelectorAll("[data-open]").forEach((el) => {
+        el.onclick = (e) => {
+          if (state.batchMode) return;
+          e.stopPropagation();
+          openConversation(el.getAttribute("data-open"));
+        };
+      });
+
+      area.querySelectorAll("[data-inline-edit]").forEach((btn) => {
+        btn.onclick = (e) => {
+          e.stopPropagation();
+          state.inlineEditingId = btn.getAttribute("data-inline-edit");
+          render();
+          const inp = area.querySelector(`[data-inline-input="${state.inlineEditingId}"]`);
+          if (inp) {
+            inp.focus();
+            inp.select();
+          }
+        };
+      });
+
+      area.querySelectorAll("[data-inline-input]").forEach((inp) => {
+        const id = inp.getAttribute("data-inline-input");
+        let saved = false;
+        const commit = async () => {
+          if (saved) return;
+          saved = true;
+          const nextTitle = inp.value.trim();
+          state.inlineEditingId = null;
+          await postApi("/api/session/update", { id, patch: { customTitle: nextTitle } });
+          showToast(nextTitle ? "已更新标题" : "已恢复默认标题");
+          await fetchState();
+        };
+        inp.onclick = (e) => e.stopPropagation();
+        inp.onkeydown = (e) => {
+          if (e.key === "Enter") { e.preventDefault(); commit(); }
+          if (e.key === "Escape") { saved = true; state.inlineEditingId = null; render(); }
+        };
+        inp.onblur = () => commit();
+      });
+
+      area.querySelectorAll("[data-act]").forEach((btn) => {
+        btn.onclick = async () => {
+          const id = btn.getAttribute("data-id");
+          const act = btn.getAttribute("data-act");
+          const item = visible.find((x) => x.id === id);
+          if (!item) return;
+
+          if (act === "pin") {
+            await postApi("/api/session/update", { id, patch: { pinned: !item.pinned } });
+            await fetchState();
+          } else if (act === "fav") {
+            await postApi("/api/session/update", { id, patch: { favorite: !item.favorite } });
+            await fetchState();
+          } else if (act === "rev") {
+            await postApi("/api/session/update", { id, patch: { reviewLater: !item.reviewLater } });
+            await fetchState();
+          } else if (act === "archive") {
+            await postApi("/api/session/update", { id, patch: { archived: true } });
+            showToast("已移入归档箱");
+            await fetchState();
+          } else if (act === "restore") {
+            await postApi("/api/session/update", { id, patch: { archived: false } });
+            showToast("已恢复到会话回廊");
+            await fetchState();
+          } else if (act === "copy") {
+            await navigator.clipboard.writeText(id);
+            showToast("已复制会话 ID");
+          } else if (act === "edit") {
+            openEditModal(item);
+          } else if (act === "group") {
+            openGroupModal([id], item.groupId);
+          } else if (act === "delete") {
+            openDeleteModal([id]);
+          }
+        };
+      });
+    }
+
+    async function openConversation(id) {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: "toggle-conversation", payload: { conversationId: id } }, "*");
+        return;
+      }
+      showToast("请在 Antigravity 侧边栏内点击标题以直接切换会话");
+    }
+
+    function openEditModal(item) {
+      state.editingId = item.id;
+      $("editTitle").value = item.customTitle || "";
+      $("editPriority").value = String(item.priority || 3);
+      $("editTags").value = (item.tags || []).join(", ");
+      $("editNote").value = item.note || "";
+      $("editModal").classList.add("show");
+    }
+
+    function openGroupModal(ids, currentGroupId = "") {
+      state.groupingIds = ids;
+      $("groupModalDesc").textContent = `为 ${ids.length} 条会话选择苍蓝回廊自定义分组（不影响官方左侧栏工作区）。`;
+      const sel = $("groupModalSelect");
+      const list = state.data.groups || [];
+      sel.innerHTML = `<option value="">未分组</option>` +
+        list.map((g) => `<option value="${esc(g.id)}">${esc(g.name)}</option>`).join("");
+      sel.value = currentGroupId || "";
+      $("groupModalNew").value = "";
+      $("groupModal").classList.add("show");
+    }
+
+    function openDeleteModal(ids) {
+      state.deletingIds = ids;
+      $("deleteDesc").textContent = `即将彻底删除 ${ids.length} 条已归档会话记录。`;
+      $("deletePurgeDisk").checked = false;
+      $("deleteModal").classList.add("show");
+    }
+
+    function openInputDialog({ title = "输入", desc = "", placeholder = "", defaultValue = "" }) {
+      return new Promise((resolve) => {
+        $("dialogTitle").textContent = title;
+        $("dialogTitle").style.color = "";
+        const dEl = $("dialogDesc");
+        dEl.textContent = desc;
+        dEl.style.display = desc ? "block" : "none";
+        $("dialogInputWrap").style.display = "block";
+        const inp = $("dialogInput");
+        inp.value = defaultValue;
+        inp.placeholder = placeholder;
+        const okBtn = $("dialogConfirm");
+        okBtn.className = "btn btn-primary";
+        okBtn.textContent = "确认";
+        $("dialogModal").classList.add("show");
+        setTimeout(() => { inp.focus(); inp.select(); }, 30);
+
+        const cleanup = (val) => {
+          $("dialogModal").classList.remove("show");
+          $("dialogCancel").onclick = null;
+          okBtn.onclick = null;
+          inp.onkeydown = null;
+          resolve(val);
+        };
+        $("dialogCancel").onclick = () => cleanup(null);
+        okBtn.onclick = () => cleanup(inp.value);
+        inp.onkeydown = (e) => {
+          if (e.key === "Enter") cleanup(inp.value);
+          if (e.key === "Escape") cleanup(null);
+        };
+      });
+    }
+
+    function openConfirmDialog({ title = "确认", desc = "", danger = false }) {
+      return new Promise((resolve) => {
+        $("dialogTitle").textContent = title;
+        $("dialogTitle").style.color = danger ? "var(--rose)" : "";
+        const dEl = $("dialogDesc");
+        dEl.textContent = desc;
+        dEl.style.display = desc ? "block" : "none";
+        $("dialogInputWrap").style.display = "none";
+        const okBtn = $("dialogConfirm");
+        okBtn.className = danger ? "btn btn-danger" : "btn btn-primary";
+        okBtn.textContent = "确认";
+        $("dialogModal").classList.add("show");
+
+        const cleanup = (val) => {
+          $("dialogModal").classList.remove("show");
+          $("dialogCancel").onclick = null;
+          okBtn.onclick = null;
+          resolve(val);
+        };
+        $("dialogCancel").onclick = () => cleanup(false);
+        okBtn.onclick = () => cleanup(true);
+      });
+    }
+
+    async function postApi(url, body) {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+      return res.json();
+    }
+
+    // Event bindings
+    document.querySelectorAll(".tab").forEach((t) => {
+      t.onclick = () => {
+        document.querySelectorAll(".tab").forEach((x) => x.classList.remove("active"));
+        t.classList.add("active");
+        state.tab = t.getAttribute("data-tab");
+        state.selected.clear();
+        render();
+      };
+    });
+
+    document.querySelectorAll(".chip").forEach((c) => {
+      c.onclick = () => {
+        document.querySelectorAll(".chip").forEach((x) => x.classList.remove("active"));
+        c.classList.add("active");
+        state.quickFilter = c.getAttribute("data-quick");
+        render();
+      };
+    });
+
+    let searchTimer;
+    $("searchInput").oninput = (e) => {
+      state.query = e.target.value;
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(fetchState, 200);
+    };
+    $("groupFilter").onchange = (e) => { state.groupFilter = e.target.value; render(); };
+    $("tagFilter").onchange = (e) => { state.tagFilter = e.target.value; render(); };
+    $("sortSelect").onchange = (e) => { state.sort = e.target.value; render(); };
+    $("btnBatchToggle").onclick = () => {
+      state.batchMode = !state.batchMode;
+      state.selected.clear();
+      render();
+    };
+    $("btnRefresh").onclick = async () => {
+      const btn = $("btnRefresh");
+      btn.classList.remove("spinning");
+      void btn.offsetWidth;
+      btn.classList.add("spinning");
+      await fetchState();
+      showToast("已刷新");
+    };
+    $("btnCopyUrl").onclick = async () => {
+      await navigator.clipboard.writeText(window.location.href);
+      showToast("已复制全屏地址");
+    };
+    function syncThemeIcon() {
+      const isLight = document.documentElement.getAttribute("data-theme") === "light";
+      $("btnTheme").textContent = isLight ? "☀️" : "🌙";
+      $("btnTheme").title = isLight ? "当前：亮色模式（点击切换暗色）" : "当前：暗色模式（点击切换亮色）";
+    }
+    $("btnTheme").onclick = () => {
+      const next = document.documentElement.getAttribute("data-theme") === "light" ? "dark" : "light";
+      document.documentElement.setAttribute("data-theme", next);
+      localStorage.setItem("azure-corridor-theme", next);
+      syncThemeIcon();
+    };
+
+    $("btnCreateGroup").onclick = async () => {
+      const name = $("newGroupName").value.trim();
+      if (!name) return showToast("请先输入分组名称");
+      await postApi("/api/group/create", { name });
+      $("newGroupName").value = "";
+      showToast(`已新建分组「${name}」`);
+      await fetchState();
+    };
+
+    $("editCancel").onclick = () => $("editModal").classList.remove("show");
+    $("editSave").onclick = async () => {
+      if (!state.editingId) return;
+      const tags = $("editTags").value.split(/[,，]/).map((s) => s.trim()).filter(Boolean);
+      await postApi("/api/session/update", {
+        id: state.editingId,
+        patch: {
+          customTitle: $("editTitle").value.trim(),
+          priority: Number($("editPriority").value),
+          tags,
+          note: $("editNote").value
+        }
+      });
+      $("editModal").classList.remove("show");
+      showToast("已保存");
+      await fetchState();
+    };
+
+    $("groupModalCancel").onclick = () => $("groupModal").classList.remove("show");
+    $("groupModalClear").onclick = async () => {
+      if (!state.groupingIds.length) return;
+      await postApi("/api/session/group", { ids: state.groupingIds, groupId: "" });
+      $("groupModal").classList.remove("show");
+      state.selected.clear();
+      showToast("已移出分组");
+      await fetchState();
+    };
+    $("groupModalConfirm").onclick = async () => {
+      if (!state.groupingIds.length) return;
+      const newName = $("groupModalNew").value.trim();
+      const groupId = $("groupModalSelect").value;
+      await postApi("/api/session/group", { ids: state.groupingIds, groupId, newGroupName: newName });
+      $("groupModal").classList.remove("show");
+      state.selected.clear();
+      showToast("已更新分组");
+      await fetchState();
+    };
+
+    $("deleteCancel").onclick = () => $("deleteModal").classList.remove("show");
+    $("deleteConfirm").onclick = async () => {
+      if (!state.deletingIds.length) return;
+      const purgeDisk = $("deletePurgeDisk").checked;
+      await postApi("/api/archive/delete", { ids: state.deletingIds, purgeDisk });
+      $("deleteModal").classList.remove("show");
+      state.selected.clear();
+      showToast("已彻底删除");
+      await fetchState();
+    };
+
+    const PRESET_COLORS = ["#7dd3fc", "#f9a8d4", "#fcd34d", "#6ee7b7", "#c4b5fd", "#fda4af", "#fb923c"];
+
+    function applyRenamedColor(color) {
+      const c = color || "#7dd3fc";
+      state.renamedColor = c;
+      document.documentElement.style.setProperty("--renamed-color", c);
+    }
+
+    let lastAutoRefresh = 0;
+    function silentAutoRefresh() {
+      if (state.inlineEditingId) return;
+      if (document.querySelector(".modal-backdrop.show")) return;
+      const now = Date.now();
+      if (now - lastAutoRefresh < 2000) return;
+      lastAutoRefresh = now;
+      fetchState();
+    }
+    window.addEventListener("focus", silentAutoRefresh);
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) silentAutoRefresh();
+    });
+
+    (async () => {
+      const savedTheme = localStorage.getItem("azure-corridor-theme");
+      if (savedTheme === "light") document.documentElement.setAttribute("data-theme", "light");
+      syncThemeIcon();
+      const savedColor = localStorage.getItem("azure-corridor-renamed-color");
+      if (savedColor) applyRenamedColor(savedColor);
+      await fetchState();
+    })();
+  </script>
+</body>
+</html>

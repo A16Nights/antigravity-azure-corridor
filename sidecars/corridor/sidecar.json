@@ -1,0 +1,21 @@
+{
+  "command": "node",
+  "args": ["server.mjs"],
+  "restart_policy": "always",
+  "display_name": "苍蓝回廊",
+  "description": "苍蓝回廊（Azure Corridor）：Antigravity 原生会话与工作区管理面板，支持全文搜索、项目分组、工作区归档、收藏、稍后回看、优先级、标签备注、批量管理与独立归档箱。",
+  "has_web_ui": true,
+  "agent_permissions": {
+    "allows_user_interactions": true
+  },
+  "ui_config": {
+    "display_name": "苍蓝回廊",
+    "views": [
+      {
+        "title": "苍蓝回廊",
+        "path": "/",
+        "entrypoint": "SIDECAR_UI_ENTRYPOINT_AUX_PANE"
+      }
+    ]
+  }
+}

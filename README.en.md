@@ -21,7 +21,7 @@
 </p>
 
 <p>
-  <a href="#features">✨ Features</a> &nbsp;·&nbsp; <a href="#architecture">🧩 Architecture</a> &nbsp;·&nbsp; <a href="#installation">🚀 Quick Start</a> &nbsp;·&nbsp; <a href="#storage">📂 Storage</a> &nbsp;·&nbsp; <a href="#azure-suite">🌌 Azure Suite</a>
+  <a href="#preview">🖼️ Preview</a> &nbsp;·&nbsp; <a href="#features">✨ Features</a> &nbsp;·&nbsp; <a href="#architecture">🧩 Architecture</a> &nbsp;·&nbsp; <a href="#installation">🚀 Quick Start</a> &nbsp;·&nbsp; <a href="#storage">📂 Storage</a> &nbsp;·&nbsp; <a href="#azure-suite">🌌 Azure Suite</a>
 </p>
 
 </div>
@@ -50,6 +50,19 @@ Select entire cards in Batch Mode to move, prioritize, star, tag, or archive in 
 </td>
 </tr>
 </table>
+
+<h2 id="preview">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/readme/sec-preview-en-dark.svg">
+  <img src="assets/readme/sec-preview-en-light.svg" alt="Interface Preview" width="100%">
+</picture>
+</h2>
+
+<p align="center">
+  <a href="assets/readme/preview-panel.png"><img src="assets/readme/preview-panel.png" alt="Azure Corridor Panel Preview" width="90%"></a>
+  <br><strong>Azure Corridor · FTS5 Full-Text Search &amp; Conversation Workbench</strong>
+  <br><sub>Instant FTS5 search, group/tag/sort filters, official archive badges, inline rename, pin/star/watch-later &amp; safe archiving</sub>
+</p>
 
 <h2 id="features">
 <picture>

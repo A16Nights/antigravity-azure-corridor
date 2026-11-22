@@ -21,7 +21,7 @@
 </p>
 
 <p>
-  <a href="#features">✨ 功能全景</a> &nbsp;·&nbsp; <a href="#architecture">🧩 工作原理</a> &nbsp;·&nbsp; <a href="#installation">🚀 快速安装</a> &nbsp;·&nbsp; <a href="#storage">📂 数据存储</a> &nbsp;·&nbsp; <a href="#azure-suite">🌌 苍蓝全家桶</a>
+  <a href="#preview">🖼️ 界面预览</a> &nbsp;·&nbsp; <a href="#features">✨ 功能全景</a> &nbsp;·&nbsp; <a href="#architecture">🧩 工作原理</a> &nbsp;·&nbsp; <a href="#installation">🚀 快速安装</a> &nbsp;·&nbsp; <a href="#storage">📂 数据存储</a> &nbsp;·&nbsp; <a href="#azure-suite">🌌 苍蓝全家桶</a>
 </p>
 
 </div>
@@ -50,6 +50,19 @@
 </td>
 </tr>
 </table>
+
+<h2 id="preview">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/readme/sec-preview-dark.svg">
+  <img src="assets/readme/sec-preview-light.svg" alt="界面预览" width="100%">
+</picture>
+</h2>
+
+<p align="center">
+  <a href="assets/readme/preview-panel.png"><img src="assets/readme/preview-panel.png" alt="苍蓝回廊会话管理面板预览" width="90%"></a>
+  <br><strong>苍蓝回廊 · FTS5 全文检索、多维筛选与会话整理工作台</strong>
+  <br><sub>毫秒级 FTS5 正文搜索、分组/标签/排序组合筛选、官方已归档同步徽标、行内改名与置顶/收藏/回看/归档操作</sub>
+</p>
 
 <h2 id="features">
 <picture>

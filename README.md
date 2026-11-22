@@ -1,12 +1,62 @@
-# 苍蓝回廊 · Azure Corridor (`antigravity-azure-corridor`)
+<div align="center">
 
-面向 **Google Antigravity** 的原生会话检索、自定义项目分组、工作区聚合、标签优先级标注与安全归档管理插件（Sidecar + 独立 Web UI）。
+<p>🌐 &nbsp; <strong>简体中文</strong> &nbsp;·&nbsp; <a href="README.en.md">English</a></p>
 
-100% 只读访问 Antigravity 本地会话数据库（`conversation_summaries.db` 与原生 `conversations_fts` FTS5 全文索引），所有自定义分组、改名、标签、备注与归档状态均独立存储在本地 JSON 中，**绝不改写或破坏 Antigravity 原生二进制 Protobuf 数据**，安全零风险。
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/readme/hero-dark.svg">
+  <img src="assets/readme/hero-light.svg" alt="苍蓝回廊 · Azure Corridor" width="100%">
+</picture>
 
----
+<p>
+  [![Release](https://img.shields.io/github/v/release/A16Nights/antigravity-azure-corridor?style=flat-square&label=Release&color=3b82f6&labelColor=1e293b)](https://github.com/A16Nights/antigravity-azure-corridor/releases)
+  [![Stars](https://img.shields.io/github/stars/A16Nights/antigravity-azure-corridor?style=flat-square&label=Stars&color=f59e0b&labelColor=1e293b)](https://github.com/A16Nights/antigravity-azure-corridor/stargazers)
+  ![Antigravity](https://img.shields.io/badge/Google_Antigravity-Native_Plugin-3b82f6?style=flat-square&labelColor=1e293b)
+  ![Node.js](https://img.shields.io/badge/Node.js-%3E%3D22.0.0-10b981?style=flat-square&labelColor=1e293b)
+  ![Zero Deps](https://img.shields.io/badge/Dependencies-Zero-06b6d4?style=flat-square&labelColor=1e293b)
+  [![License](https://img.shields.io/badge/License-MIT-6366f1?style=flat-square&labelColor=1e293b)](./LICENSE)
+</p>
 
-## ✨ 功能全景
+<p>
+  <strong>100% 只读原生会话 FTS5 全文检索、自定义项目分组、工作区聚合、P1~P5 优先级标注与独立安全归档箱</strong>
+</p>
+
+<p>
+  <a href="#features">✨ 功能全景</a> &nbsp;·&nbsp; <a href="#architecture">🧩 工作原理</a> &nbsp;·&nbsp; <a href="#installation">🚀 快速安装</a> &nbsp;·&nbsp; <a href="#storage">📂 数据存储</a> &nbsp;·&nbsp; <a href="#azure-suite">🌌 苍蓝全家桶</a>
+</p>
+
+</div>
+
+面向 **Google Antigravity** 的原生会话管理增强面板（Sidecar + 独立 Web UI）。100% 只读访问 Antigravity 本地会话数据库（`conversation_summaries.db` 与原生 `conversations_fts` FTS5 索引），所有自定义分组、改名、标签、备注与归档均独立存储在本地 JSON 中，**绝不改写或破坏原生二进制 Protobuf 数据**，安全零风险。
+
+<table>
+<tr>
+<td width="50%" valign="top">
+<h4>⚡ 原生秒切 & FTS5 全文检索</h4>
+基于 <code>node:sqlite</code> 直查原生 <code>conversations_fts</code> 索引，毫秒检索标题、正文、代码片段与备注；点击标题通过原生协议秒切会话。
+</td>
+<td width="50%" valign="top">
+<h4>🗂️ 双轨分组与官方归档同步</h4>
+支持自定义项目分组与原生工作区自动聚合，自动识别 Antigravity 官方已归档会话并展示醒目徽标与专属筛选。
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+<h4>🏷️ 行内改名、优先级与长备注</h4>
+支持行内改名（7 色预设 + 自由取色高亮）、置顶、<code>★ 收藏</code>、<code>⏱ 稍后回看</code>、P1~P5 优先级、多标签与长备注。
+</td>
+<td width="50%" valign="top">
+<h4>📦 整卡批量操作 & 独立归档箱</h4>
+开启批量管理后点选整卡即可批量分组/标星/改优先级/加删标签/归档；主列表只归档不误删，归档箱随时恢复。
+</td>
+</tr>
+</table>
+
+<h2 id="features">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/readme/sec-features-dark.svg">
+  <img src="assets/readme/sec-features-light.svg" alt="功能全景" width="100%">
+</picture>
+</h2>
 
 ### 1. 原生会话秒切与多维全文检索
 - **点击标题原生秒切**：通过 Antigravity Sidecar 原生 `toggle-conversation` 协议直接跳转并激活目标会话，搭配独立的「复制会话 ID」按钮。
@@ -35,13 +85,37 @@
 - **跨插件共享「苍蓝主题色调中心」**：内置 6 套官方配色预设 + 自定义主副双色取色器 + 4 个自定义保存栏位，与苍蓝全系插件实时联动。
 - **左侧栏入口开关、独立 Web UI 与更新检查**：顶栏一键切换左侧栏快捷入口显隐、在系统浏览器全屏打开独立 `Web UI`、点击版本号实时检查 GitHub 最新 Release。
 
----
+<h2 id="architecture">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/readme/sec-arch-dark.svg">
+  <img src="assets/readme/sec-arch-light.svg" alt="工作原理与架构" width="100%">
+</picture>
+</h2>
 
-## 🚀 安装方式
+```mermaid
+flowchart LR
+  DB["Antigravity 原生 SQLite<br/>conversation_summaries.db<br/>&amp; conversations_fts"] -->|"100% 只读查询 (node:sqlite)"| C["苍蓝回廊 Sidecar"]
+  JSON["本地独立标注库<br/>annotations.v1.json"] <-->|"分组 / 改名 / 标签 / 优先级 / 归档"| C
+  C -->|"原生 toggle-conversation"| AGY["Antigravity 秒切会话"]
+  C -->|"独立标签页"| ARC["安全归档箱<br/>随时恢复 / 二次确认清理"]
+```
 
-> 前置要求：**Node.js >= 22.0.0**（使用内置 `node:sqlite`，零第三方 npm 依赖）。
+<h2 id="installation">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/readme/sec-install-dark.svg">
+  <img src="assets/readme/sec-install-light.svg" alt="快速安装与上手" width="100%">
+</picture>
+</h2>
 
-将本仓库克隆或复制到 Antigravity 全局插件目录（目录名固定为 `azure-corridor`）：
+> **前置要求**：**Node.js >= 22.0.0**（零第三方 npm 运行时依赖，纯 Node.js 原生 ESM 实现）。
+
+### 方式一 · 一句话让 Antigravity 帮你自动安装（推荐）
+
+直接把下面这句话发给 Antigravity 即可自动完成克隆与核验：
+
+> 帮我把 `https://github.com/A16Nights/antigravity-azure-corridor.git` 克隆到本机 Antigravity 全局插件目录，目录名设为 `azure-corridor`，检查目录无误后告诉我，我再按 `Ctrl+R` 重载生效。
+
+### 方式二 · 命令行手动克隆
 
 ```powershell
 # Windows (PowerShell)
@@ -53,18 +127,50 @@ git clone https://github.com/A16Nights/antigravity-azure-corridor.git ~/.gemini/
 
 重启或重载 Antigravity（`Ctrl+R`），在 **Plugins** 面板启用 **苍蓝回廊** 即可在左侧栏或右侧辅助面板打开。
 
----
+<h2 id="storage">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/readme/sec-storage-dark.svg">
+  <img src="assets/readme/sec-storage-light.svg" alt="数据与配置存储" width="100%">
+</picture>
+</h2>
 
-## 📂 数据与配置存储
+<details open>
+<summary><strong>点击展开查看本机数据目录与苍蓝套件共享配置路径</strong></summary>
+
+<br>
 
 - **会话分组、改名、标签、备注与归档数据**：`~/.gemini/azure-corridor/annotations.v1.json`
 - **苍蓝套件左侧栏显示配置**：`~/.gemini/azure-sidebar-nav.json`
 - **苍蓝套件共享主题配置**：`~/.gemini/azure-theme.json`
 
-不会修改或污染任何 Antigravity 原生数据库文件。
+> 绝不修改或污染任何 Antigravity 原生数据库文件。
+
+</details>
+
+<h2 id="azure-suite">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/readme/sec-suite-dark.svg">
+  <img src="assets/readme/sec-suite-light.svg" alt="苍蓝套件全家桶" width="100%">
+</picture>
+</h2>
+
+**苍蓝套件（Azure Suite）** 8 款插件共享统一的 **Neko Glass 毛玻璃界面**、跨插件同步的 **苍蓝主题色调中心**（`~/.gemini/azure-theme.json`）以及可自由开关的 **左侧栏快捷入口**（`~/.gemini/azure-sidebar-nav.json`）：
+
+| 插件 | 仓库 | 核心能力 |
+| --- | --- | --- |
+| ✦ **苍蓝协奏台** | [antigravity-external-orchestrator](https://github.com/A16Nights/antigravity-external-orchestrator) | 多渠道外部模型协同调度、自定义调度角色、容灾断路器与全链路实时监控 |
+| 🪐 **苍蓝星轨** | [antigravity-azure-orbit](https://github.com/A16Nights/antigravity-azure-orbit) | 将外部大模型直接挂载进 Antigravity 左下角原生模型下拉菜单担任主脑 |
+| 🧭 **苍蓝罗盘** | [antigravity-azure-compass](https://github.com/A16Nights/antigravity-azure-compass) | Agent 工作模式预设中心、上下文水位监测与自动 /compact、苍蓝套件左侧栏总控 |
+| 🏛️ **苍蓝回廊** &nbsp;`✦ 当前仓库` | [antigravity-azure-corridor](https://github.com/A16Nights/antigravity-azure-corridor) | 只读原生会话 FTS5 全文检索、自定义项目分组、优先级标签与独立安全归档箱 |
+| 🌌 **蓝汐 · 潮汐认知图谱** | [antigravity-lanxi-memory](https://github.com/A16Nights/antigravity-lanxi-memory) | 五层纯 Markdown 真源记忆、CJK FTS5、潮汐遗忘曲线与交互式潮汐星海图谱 |
+| 💎 **苍蓝魂匣** | [antigravity-soul-md](https://github.com/A16Nights/antigravity-soul-md) | 多人设卡热切换、工作区专属绑定、外接模型智能防掉线锚点与分层文件记忆 |
+| 💭 **思语中文** | [antigravity-think-zh](https://github.com/A16Nights/antigravity-think-zh) | 内部思考语言简体中文 / 英文双档热切换、双通道防漂移与实时注入预览 |
+| 🔮 **苍蓝棱镜** | [antigravity-azure-prism](https://github.com/A16Nights/antigravity-azure-prism) | 原生 MCP App 思维链实时观测、免密钥零 Token 机翻与外部模型双通道译文 |
 
 ---
 
-## 📄 License
+<div align="center">
 
-[MIT](./LICENSE)
+📄 Released under the **[MIT License](./LICENSE)** · Crafted for **Google Antigravity**
+
+</div>

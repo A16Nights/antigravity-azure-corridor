@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "azure-corridor-nav": {
+      "command": "node",
+      "args": ["./mcp-server.mjs"]
+    }
+  }
+}

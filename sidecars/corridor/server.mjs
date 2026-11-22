@@ -1,4 +1,7 @@
 import { checkGithubUpdate } from "../../lib/update-checker.mjs";
+import { isLeftSidebarEnabled, setLeftSidebarEnabled, listOwnedPluginsNavState, registerSidecarRuntime, refreshAntigravityMcpServers, injectSidebarToggleWidget } from "../../lib/sidebar-nav.mjs";
+import { handleAzureThemeHttp } from "../../lib/azure-theme.mjs";
+import { injectAzureUiKit } from "../../lib/azure-ui-kit.mjs";
 import http from "node:http";
 import fs from "node:fs";
 import path from "node:path";
@@ -70,10 +73,35 @@ const server = http.createServer(async (req, res) => {
         "Content-Type": "text/html; charset=utf-8",
         "Cache-Control": "no-store"
       });
-      res.end(html);
+      res.end(injectAzureUiKit(injectSidebarToggleWidget(html, "azure-corridor"), "azure-corridor"));
       return;
     }
 
+    if (await handleAzureThemeHttp(req, res)) return;
+    if (req.method === "GET" && pathname === "/api/sidebar-nav") {
+      sendJson(res, 200, {
+        ok: true,
+        pluginId: "azure-corridor",
+        showInLeftSidebar: isLeftSidebarEnabled("azure-corridor"),
+        plugins: listOwnedPluginsNavState()
+      });
+      return;
+    }
+    if (req.method === "POST" && pathname === "/api/sidebar-nav") {
+      const body = await readBody(req);
+      const targetId = String(body.pluginId || "azure-corridor").trim();
+      const nextVal = Boolean(body.showInLeftSidebar);
+      setLeftSidebarEnabled(targetId, nextVal);
+      const rf = await refreshAntigravityMcpServers();
+      sendJson(res, 200, {
+        ok: true,
+        pluginId: targetId,
+        showInLeftSidebar: nextVal,
+        refreshed: Boolean(rf?.ok),
+        plugins: listOwnedPluginsNavState()
+      });
+      return;
+    }
     if (req.method === "GET" && pathname === "/api/state") {
       const q = url.searchParams.get("q") || "";
       const state = store.buildState({ query: q });
@@ -136,4 +164,11 @@ const server = http.createServer(async (req, res) => {
 
 server.listen(PORT, HOST, () => {
   console.log(`[azure-corridor] listening on http://${HOST}:${PORT}`);
+  try {
+    const __a = server.address();
+    const __p = (__a && typeof __a === "object" && __a.port) ? __a.port : Number(PORT) || 0;
+    const __t = (process.env.ANTIGRAVITY_SIDECAR_UI_TOKEN || process.env.ANTIGRAVITY_SIDECAR_AUTH_TOKEN || process.env.ANTIGRAVITY_SIDECAR_WEB_TOKEN || "").trim();
+    const __u = __t ? `http://127.0.0.1:${__p}/?token=${encodeURIComponent(__t)}` : `http://127.0.0.1:${__p}/`;
+    registerSidecarRuntime("azure-corridor", { port: __p, url: __u });
+  } catch {}
 });

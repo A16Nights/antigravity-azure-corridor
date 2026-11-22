@@ -260,6 +260,7 @@
         <span class="chip" data-quick="favorite">★ 收藏</span>
         <span class="chip" data-quick="review">🔖 稍后回看</span>
         <span class="chip" data-quick="running">● 运行中</span>
+        <span class="chip" data-quick="official_archived">📦 官方已归档</span>
       </div>
     </div>
 
@@ -275,6 +276,7 @@
       <div class="toolbar-row" id="batchActions"></div>
     </div>
 
+    <div id="corridor-tabbar" class="azure-tabbar" style="display:none;"></div>
     <div id="contentArea" class="list"></div>
   </div>
 
@@ -475,6 +477,7 @@
       if (state.quickFilter === "favorite") out = out.filter((s) => s.favorite);
       if (state.quickFilter === "review") out = out.filter((s) => s.reviewLater);
       if (state.quickFilter === "running") out = out.filter((s) => s.isRunning);
+      if (state.quickFilter === "official_archived") out = out.filter((s) => s.officialArchived);
 
       out.sort((a, b) => {
         if (state.tab === "sessions" && a.pinned !== b.pinned) return a.pinned ? -1 : 1;
@@ -726,6 +729,7 @@
                 </div>
                 <div class="meta-row">
                   ${s.isRunning ? `<span class="badge badge-run">● 运行中</span>` : ""}
+                  ${s.officialArchived ? `<span class="badge warn" title="${esc(s.officialArchivedAt ? ("已在 Antigravity 官方归档于 " + fmtTime(s.officialArchivedAt)) : "已在 Antigravity 官方归档")}">📦 官方已归档</span>` : ""}
                   <span class="badge ${s.groupId ? "badge-grp" : ""}">${esc(s.groupName)}</span>
                   ${s.priority <= 2 ? `<span class="badge badge-p${s.priority}">P${s.priority}</span>` : `<span class="badge">P${s.priority}</span>`}
                   <span>${s.stepCount} 步</span>
@@ -855,7 +859,61 @@
       });
     }
 
+    let corridorTabStore = null;
+    function getCorridorTabStore() {
+      if (!corridorTabStore && typeof window.createAzureTabStore === "function") {
+        corridorTabStore = window.createAzureTabStore("azure_corridor_tabs_v1");
+      }
+      return corridorTabStore;
+    }
+    function findConversationTitle(id) {
+      const list = (state.data && state.data.conversations) || [];
+      const found = list.find((c) => c.id === id);
+      return found ? (found.customTitle || found.title || id.slice(0, 8)) : id.slice(0, 8);
+    }
+    function renderCorridorTabBar() {
+      const bar = $("corridor-tabbar");
+      const store = getCorridorTabStore();
+      if (!bar || !store) return;
+      const st = store.getState();
+      if (!st.tabs.length && !st.closed.length) {
+        bar.style.display = "none";
+        return;
+      }
+      bar.style.display = "flex";
+      bar.innerHTML = st.tabs.map((t) => `
+        <div class="azure-tab-pill ${st.activeId === t.id ? "active" : ""}" data-c-tab="${esc(t.id)}" title="${esc(t.title)}">
+          <span class="tab-act" data-c-pin="${esc(t.id)}" title="${t.pinned ? "取消置顶" : "置顶标签"}">${t.pinned ? "📌" : "·"}</span>
+          <span class="tab-txt">${esc(t.title)}</span>
+          <span class="tab-act" data-c-close="${esc(t.id)}" title="关闭标签">×</span>
+        </div>
+      `).join("") + (st.closed.length ? `<button class="azure-tab-reopen" id="btn-corridor-reopen" title="恢复刚关闭的会话标签">↩ 恢复(${st.closed.length})</button>` : "");
+      bar.querySelectorAll("[data-c-tab]").forEach((el) => {
+        el.onclick = (e) => {
+          if (e.target.closest("[data-c-pin]") || e.target.closest("[data-c-close]")) return;
+          openConversation(el.getAttribute("data-c-tab"));
+        };
+      });
+      bar.querySelectorAll("[data-c-pin]").forEach((el) => {
+        el.onclick = (e) => { e.stopPropagation(); store.togglePin(el.getAttribute("data-c-pin")); renderCorridorTabBar(); };
+      });
+      bar.querySelectorAll("[data-c-close]").forEach((el) => {
+        el.onclick = (e) => { e.stopPropagation(); store.close(el.getAttribute("data-c-close")); renderCorridorTabBar(); };
+      });
+      const reopen = $("btn-corridor-reopen");
+      if (reopen) reopen.onclick = () => { const item = store.reopenLast(); renderCorridorTabBar(); if (item) openConversation(item.id); };
+    }
+    setTimeout(() => {
+      renderCorridorTabBar();
+      try { window.AzureScrollAnchor?.attach($("contentArea")); } catch {}
+    }, 260);
+
     async function openConversation(id) {
+      const store = getCorridorTabStore();
+      if (store && id) {
+        store.open({ id, title: findConversationTitle(id) });
+        renderCorridorTabBar();
+      }
       if (window.parent && window.parent !== window) {
         window.parent.postMessage({ type: "toggle-conversation", payload: { conversationId: id } }, "*");
         return;

@@ -85,7 +85,15 @@
       transition: color 0.15s, background 0.15s, border-color 0.15s;
     }
     .tab:hover { color: var(--text); background: var(--accent-soft); }
-    .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .tab.active,
+    .tabs button.tab.active,
+    .tabs button.tab.active:hover {
+      background: var(--neko-grad, linear-gradient(135deg, #2563eb 0%, #3b82f6 58%, #7c3aed 100%)) !important;
+      border-color: rgba(147, 197, 253, 0.75) !important;
+      color: #ffffff !important;
+      font-weight: 700 !important;
+      box-shadow: 0 2px 10px rgba(59, 130, 246, 0.36), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
+    }
     .btn-icon { width: 28px; height: 26px; padding: 0; justify-content: center; font-size: 14px; }
     @keyframes spinOnce { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     .spinning { animation: spinOnce 0.45s ease; }
@@ -110,7 +118,15 @@
     }
     .chip:hover { background: var(--bg-hover); border-color: var(--accent); color: var(--text); }
     .chip:active { transform: translateY(1px); }
-    .chip.active { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); font-weight: 600; }
+    .chip.active,
+    .toolbar-row .chip.active,
+    .toolbar-row .chip.active:hover {
+      background: var(--neko-grad, linear-gradient(135deg, #2563eb 0%, #3b82f6 58%, #7c3aed 100%)) !important;
+      border-color: rgba(147, 197, 253, 0.78) !important;
+      color: #ffffff !important;
+      font-weight: 700 !important;
+      box-shadow: 0 2px 10px rgba(59, 130, 246, 0.36), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
+    }
 
     .batch-bar {
       display: none; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;
@@ -168,16 +184,40 @@
       background: rgba(148, 163, 184, 0.08); color: var(--text-muted); white-space: pre-wrap;
     }
     .card-actions { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; margin-top: 8px; }
-    .icon-btn {
-      background: transparent; border: 1px solid var(--border); border-radius: 6px;
-      padding: 2px 7px; cursor: pointer; font-size: 11px; color: var(--text-muted);
-      transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.1s;
+    .icon-btn,
+    .card-actions button.seg-btn.icon-btn {
+      background: transparent !important; border: 1px solid var(--border) !important; border-radius: 6px !important;
+      padding: 2px 7px; cursor: pointer; font-size: 11px; color: var(--text-muted) !important;
+      transition: background 0.15s, border-color 0.15s, color 0.15s, box-shadow 0.15s, transform 0.1s;
     }
-    .icon-btn:hover { background: var(--bg-hover); border-color: var(--accent); color: var(--text); }
-    .icon-btn:active { transform: translateY(1px); }
-    .icon-btn.on-fav { color: var(--amber); border-color: rgba(251, 191, 36, 0.5); background: rgba(251, 191, 36, 0.1); }
-    .icon-btn.on-pin { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
-    .icon-btn.on-rev { color: var(--purple); border-color: rgba(167, 139, 250, 0.5); background: rgba(167, 139, 250, 0.1); }
+    .icon-btn:hover,
+    .card-actions button.seg-btn.icon-btn:hover { background: var(--bg-hover) !important; border-color: var(--accent) !important; color: var(--text) !important; }
+    .icon-btn:active,
+    .card-actions button.seg-btn.icon-btn:active { transform: translateY(1px); }
+    .icon-btn.on-fav,
+    .card-actions button.seg-btn.icon-btn.on-fav,
+    .card-actions button.seg-btn.icon-btn.on-fav:hover {
+      color: #fde68a !important; border-color: rgba(251, 191, 36, 0.78) !important;
+      background: rgba(245, 158, 11, 0.22) !important; font-weight: 600 !important;
+      box-shadow: 0 0 0 1px rgba(251, 191, 36, 0.22), 0 2px 8px rgba(245, 158, 11, 0.20) !important;
+    }
+    .icon-btn.on-pin,
+    .card-actions button.seg-btn.icon-btn.on-pin,
+    .card-actions button.seg-btn.icon-btn.on-pin:hover {
+      color: #bae6fd !important; border-color: rgba(56, 189, 248, 0.80) !important;
+      background: rgba(14, 165, 233, 0.24) !important; font-weight: 600 !important;
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.24), 0 2px 8px rgba(14, 165, 233, 0.22) !important;
+    }
+    .icon-btn.on-rev,
+    .card-actions button.seg-btn.icon-btn.on-rev,
+    .card-actions button.seg-btn.icon-btn.on-rev:hover {
+      color: #e9d5ff !important; border-color: rgba(192, 132, 252, 0.78) !important;
+      background: rgba(168, 85, 247, 0.24) !important; font-weight: 600 !important;
+      box-shadow: 0 0 0 1px rgba(192, 132, 252, 0.22), 0 2px 8px rgba(168, 85, 247, 0.22) !important;
+    }
+    html[data-theme="light"] .card-actions button.seg-btn.icon-btn.on-fav { color: #b45309 !important; background: rgba(245, 158, 11, 0.16) !important; border-color: rgba(217, 119, 6, 0.58) !important; }
+    html[data-theme="light"] .card-actions button.seg-btn.icon-btn.on-pin { color: #0369a1 !important; background: rgba(14, 165, 233, 0.15) !important; border-color: rgba(2, 132, 199, 0.58) !important; }
+    html[data-theme="light"] .card-actions button.seg-btn.icon-btn.on-rev { color: #7e22ce !important; background: rgba(168, 85, 247, 0.15) !important; border-color: rgba(147, 51, 234, 0.55) !important; }
 
     .grp-card {
       display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
@@ -594,6 +634,7 @@
       $("sessionToolbar").style.display = (state.tab === "sessions" || state.tab === "archive") ? "flex" : "none";
       $("groupToolbar").style.display = state.tab === "groups" ? "flex" : "none";
       $("btnBatchToggle").classList.toggle("btn-active", state.batchMode);
+      $("btnBatchToggle").classList.toggle("btn-primary", state.batchMode);
       const area = $("contentArea");
 
       if (state.tab === "settings") {
@@ -745,9 +786,9 @@
           </div>
           <div class="card-actions">
             ${state.tab === "sessions" ? `
-              <button class="icon-btn ${s.pinned ? "on-pin" : ""}" data-act="pin" data-id="${esc(s.id)}">置顶</button>
-              <button class="icon-btn ${s.favorite ? "on-fav" : ""}" data-act="fav" data-id="${esc(s.id)}">★ 收藏</button>
-              <button class="icon-btn ${s.reviewLater ? "on-rev" : ""}" data-act="rev" data-id="${esc(s.id)}">🔖 回看</button>
+              <button class="seg-btn icon-btn ${s.pinned ? "on-pin" : ""}" data-act="pin" data-id="${esc(s.id)}">置顶</button>
+              <button class="seg-btn icon-btn ${s.favorite ? "on-fav" : ""}" data-act="fav" data-id="${esc(s.id)}">★ 收藏</button>
+              <button class="seg-btn icon-btn ${s.reviewLater ? "on-rev" : ""}" data-act="rev" data-id="${esc(s.id)}">🔖 回看</button>
               <button class="icon-btn" data-act="group" data-id="${esc(s.id)}">分组</button>
               <button class="icon-btn" data-act="edit" data-id="${esc(s.id)}">编辑</button>
               <button class="icon-btn" data-act="copy" data-id="${esc(s.id)}">复制ID</button>

@@ -195,7 +195,7 @@
     }
     .modal-backdrop.show { display: flex; }
     .modal {
-      width: 100%; max-width: 440px; background: var(--bg-card);
+      width: 100%; max-width: 440px; max-height: 86vh; overflow-y: auto; background: var(--bg-card);
       border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px;
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
     }
@@ -210,10 +210,11 @@
     .modal-foot { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
 
     .toast {
-      position: fixed; bottom: 14px; right: 14px; background: var(--bg-elev);
-      border: 1px solid var(--accent); color: var(--text); padding: 7px 12px;
-      border-radius: 8px; font-size: 12px; opacity: 0; pointer-events: none;
-      transition: opacity 0.2s; z-index: 120;
+      position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); background: var(--bg-elev);
+      border: 1px solid var(--accent); color: var(--text); padding: 8px 16px;
+      border-radius: 9px; font-size: 12.5px; opacity: 0; pointer-events: none;
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
+      transition: opacity 0.2s; z-index: 12000;
     }
     .toast.show { opacity: 1; }
   </style>
@@ -437,7 +438,9 @@
     async function fetchState() {
       const params = new URLSearchParams();
       if (state.query.trim()) params.set("q", state.query.trim());
-      const res = await fetch(`/api/state?${params.toString()}`);
+      const tok = new URLSearchParams(location.search).get("token") || "";
+      const headers = tok ? { "X-Codeium-Sidecar-Token": tok } : {};
+      const res = await fetch(`/api/state?${params.toString()}`, { headers });
       const json = await res.json();
       if (json.ok) {
         state.data = json;
@@ -867,8 +870,9 @@
       return corridorTabStore;
     }
     function findConversationTitle(id) {
-      const list = (state.data && state.data.conversations) || [];
-      const found = list.find((c) => c.id === id);
+      const activeList = (state.data && state.data.sessions) || [];
+      const archList = (state.data && state.data.archivedSessions) || [];
+      const found = activeList.find((c) => c.id === id) || archList.find((c) => c.id === id);
       return found ? (found.customTitle || found.title || id.slice(0, 8)) : id.slice(0, 8);
     }
     function renderCorridorTabBar() {
@@ -1007,12 +1011,21 @@
     }
 
     async function postApi(url, body) {
+      const tok = new URLSearchParams(location.search).get("token") || "";
+      const headers = { "Content-Type": "application/json" };
+      if (tok) headers["X-Codeium-Sidecar-Token"] = tok;
       const res = await fetch(url, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers,
         body: JSON.stringify(body)
       });
-      return res.json();
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.ok === false) {
+        const msg = data.error || `请求失败 (HTTP ${res.status})`;
+        showToast(msg);
+        throw new Error(msg);
+      }
+      return data;
     }
 
     // Event bindings
@@ -1074,12 +1087,19 @@
     };
 
     $("btnCreateGroup").onclick = async () => {
+      const btn = $("btnCreateGroup");
+      if (btn.disabled) return;
       const name = $("newGroupName").value.trim();
       if (!name) return showToast("请先输入分组名称");
-      await postApi("/api/group/create", { name });
-      $("newGroupName").value = "";
-      showToast(`已新建分组「${name}」`);
-      await fetchState();
+      btn.disabled = true;
+      try {
+        await postApi("/api/group/create", { name });
+        $("newGroupName").value = "";
+        showToast(`已新建分组「${name}」`);
+        await fetchState();
+      } catch {} finally {
+        btn.disabled = false;
+      }
     };
 
     $("editCancel").onclick = () => $("editModal").classList.remove("show");

@@ -1,13 +1,13 @@
 ---
 name: azure-corridor
-description: 苍蓝回廊（Azure Corridor）：Antigravity 原生会话与工作区管理面板。支持全文搜索、项目/工作区分组与归档、置顶、收藏、稍后回看、1~5级优先级、标签备注、批量操作与独立归档箱。
+description: 苍蓝回廊（Azure Corridor）：纯官方原生 Antigravity 2.35+ 会话与工作区管理面板。100% 同步官方 ConversationService 与工作区配置，支持全文搜索、官方工作区浏览、置顶、收藏、原生标签/分组、归档箱、批量操作、新建会话、跨工作区转移续聊与官方永久删除。
 ---
 
 # 苍蓝回廊（Azure Corridor）
 
-当用户需要整理、搜索、收藏、标注、归档或切换 Antigravity 历史会话与工作区时，引导打开 `[苍蓝回廊](sidecar://azure-corridor/corridor/)` 侧边栏面板。
+当用户明确需要整理、搜索、收藏、置顶、归档、新建、跨工作区转移或删除 Antigravity 原生会话与工作区时，输出 `[苍蓝回廊](sidecar://azure-corridor/corridor/)` 侧边栏面板链接（Antigravity 2.35.1+ 会在回复出现该链接时自动在侧栏展开面板，平时无需主动附带）。
 
-## 核心能力
-- **只读原生数据**：直接读取 `~/.gemini/antigravity/conversation_summaries.db`（含 FTS5 全文搜索索引）与 `~/.gemini/config/projects/*.json`，不破坏原生数据库。
-- **精细组织**：支持置顶、收藏、稍后回看、1~5 级优先级、自定义重命名、多标签与备注，独立保存在 `~/.gemini/azure-corridor/annotations.v1.json`。
-- **安全生命周期**：主列表只提供归档（可随时恢复），彻底删除仅在「归档箱」内经二次确认后执行。
+## 核心能力（100% 同步官方）
+- **纯官方原生真源**：直连 Antigravity 2.35+ `product.v1.ConversationService` 与 `~/.gemini/config/projects/*.json`，标题、置顶、收藏、归档、官方标签、官方分组（`conversationGroupId`）、运行状态、新建与永久删除全部直接读写官方，不再维护非官方副本。
+- **官方工作区与跨区转移**：按官方工作区归类/筛选/新建会话；由于官方将原会话 `metadata.projectId` 锁定为不可变属性，提供纯官方「跨工作区转移续聊」在目标工作区拉起续接会话（继承标题/标签/置顶/收藏/分组并携带原会话引用）并可选自动归档原会话。
+- **无限历史与正文检索**：复用官方只读 FTS5 索引（支持 5000 条命中）与列表分页渲染，适配 2.35+ 取消 500 条历史上限。

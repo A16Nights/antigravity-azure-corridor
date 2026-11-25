@@ -155,57 +155,56 @@ const server = http.createServer(async (req, res) => {
       });
       return;
     }
+    if (req.method === "GET" && pathname === "/api/native-status") {
+      return sendJson(res, 200, { ok: true, ...store.getNativeStatus() });
+    }
+
     if (req.method === "GET" && pathname === "/api/state") {
       const q = url.searchParams.get("q") || "";
-      const state = store.buildState({ query: q });
+      const forceNative = url.searchParams.get("force") === "1";
+      const state = await store.buildState({ query: q, forceNative });
       return sendJson(res, 200, { ok: true, ...state });
+    }
+
+    if (req.method === "POST" && pathname === "/api/session/create") {
+      const body = await readBody(req);
+      const result = await store.createNativeSession({
+        title: body.title || "",
+        prompt: body.prompt || "",
+        model: body.model || "",
+        tags: Array.isArray(body.tags) ? body.tags : [],
+        projectId: body.projectId || ""
+      });
+      return sendJson(res, 200, { ok: true, ...result });
+    }
+
+    if (req.method === "POST" && pathname === "/api/session/transfer") {
+      const body = await readBody(req);
+      const result = await store.transferSessionToProject({
+        sourceId: body.sourceId || "",
+        targetProjectId: body.targetProjectId || "",
+        archiveSource: body.archiveSource !== false,
+        model: body.model || "",
+        note: body.note || ""
+      });
+      return sendJson(res, 200, { ok: true, ...result });
     }
 
     if (req.method === "POST" && pathname === "/api/session/update") {
       const body = await readBody(req);
-      const result = store.updateSessionMeta(body.id, body.patch || {});
+      const result = await store.updateSession(body.id, body.patch || {});
       return sendJson(res, 200, { ok: true, ...result });
     }
 
     if (req.method === "POST" && pathname === "/api/session/batch") {
       const body = await readBody(req);
-      const result = store.batchUpdateSessions(body.ids || [], body.action || "", body.payload || {});
+      const result = await store.batchUpdateSessions(body.ids || [], body.action || "", body.payload || {});
       return sendJson(res, 200, { ok: true, ...result });
     }
 
-    if (req.method === "POST" && pathname === "/api/session/group") {
+    if (req.method === "POST" && pathname === "/api/session/delete") {
       const body = await readBody(req);
-      const result = store.assignSessionsToGroup(body.ids || [], body.groupId || "", body.newGroupName || "");
-      return sendJson(res, 200, { ok: true, ...result });
-    }
-
-    if (req.method === "POST" && pathname === "/api/group/create") {
-      const body = await readBody(req);
-      const result = store.createGroup(body.name);
-      return sendJson(res, 200, { ok: true, ...result });
-    }
-
-    if (req.method === "POST" && pathname === "/api/group/rename") {
-      const body = await readBody(req);
-      const result = store.renameGroup(body.groupId, body.name);
-      return sendJson(res, 200, { ok: true, ...result });
-    }
-
-    if (req.method === "POST" && pathname === "/api/group/archive") {
-      const body = await readBody(req);
-      const result = store.setGroupArchived(body.groupId, Boolean(body.archived));
-      return sendJson(res, 200, { ok: true, ...result });
-    }
-
-    if (req.method === "POST" && pathname === "/api/group/delete") {
-      const body = await readBody(req);
-      const result = store.deleteGroup(body.groupId);
-      return sendJson(res, 200, { ok: true, ...result });
-    }
-
-    if (req.method === "POST" && pathname === "/api/archive/delete") {
-      const body = await readBody(req);
-      const result = store.deleteArchivedSessions(body.ids || [], Boolean(body.purgeDisk));
+      const result = await store.deleteSessions(body.ids || []);
       return sendJson(res, 200, { ok: true, ...result });
     }
 

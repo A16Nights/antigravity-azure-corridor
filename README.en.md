@@ -17,7 +17,7 @@
 </p>
 
 <p>
-  <strong>100% read-only FTS5 conversation search, custom project groups, workspace aggregation, P1–P5 priorities, and a safe Archive Box</strong>
+  <strong>100% native Antigravity 2.35+ ConversationService &amp; Workspace manager · FTS5 full-text search · cross-workspace transfer · native tags, groups &amp; archive sync</strong>
 </p>
 
 <p>
@@ -26,27 +26,27 @@
 
 </div>
 
-Native conversation management workbench (Sidecar + standalone Web UI) for **Google Antigravity**. Queries Antigravity's local SQLite databases (`conversation_summaries.db` & `conversations_fts`) strictly in **read-only mode** while persisting all custom groups, renames, tags, notes, and archive states in a separate local JSON file—**zero risk to native Protobuf data**.
+Pure-native conversation & workspace workbench (Sidecar + standalone Web UI) for **Google Antigravity 2.35+**. Syncs 100% directly with Antigravity's official `ConversationService` and workspace configuration while querying native `conversations_fts` via `node:sqlite` for millisecond full-text search, workspace browsing & creation, pinning/starring, native tags & groups, official Archive Box, batch actions, cross-workspace transfer, and official permanent deletion.
 
 <table>
 <tr>
 <td width="50%" valign="top">
 <h4>⚡ Instant Switch & FTS5 Search</h4>
-Queries native <code>conversations_fts</code> via built-in <code>node:sqlite</code> in milliseconds across titles, full bodies, code snippets, and notes; click any title to switch natively.
+Queries native <code>conversations_fts</code> via built-in <code>node:sqlite</code> in milliseconds across titles, full bodies, and code snippets; click any session to switch natively.
 </td>
 <td width="50%" valign="top">
-<h4>🗂️ Dual Grouping & Archive Sync</h4>
-Combine custom project groups with automatic native Workspace detection, plus automatic syncing and badge display for officially archived conversations.
+<h4>🗂️ 100% Official Native Sync</h4>
+Connects directly to Antigravity's <code>ConversationService</code> and workspaces to stay in full two-way sync with native groups, tags, pins, stars, and archive states.
 </td>
 </tr>
 <tr>
 <td width="50%" valign="top">
-<h4>🏷️ Inline Rename, Priorities & Notes</h4>
-Inline title editing with customizable highlight colors, pin/star/watch-later flags, P1–P5 priority badges, multi-tags, and rich notes.
+<h4>🔀 Create &amp; Cross-Workspace Transfer</h4>
+Spin up new conversations inside any official workspace or transfer an existing conversation to another workspace to continue seamlessly.
 </td>
 <td width="50%" valign="top">
-<h4>📦 Whole-Card Batch & Archive Box</h4>
-Select entire cards in Batch Mode to move, prioritize, star, tag, or archive in bulk; main view archives safely without destructive deletes.
+<h4>📦 Batch Actions &amp; Official Archive Box</h4>
+Batch-group, tag, star, archive, restore, or perform double-confirmed official permanent deletion in full sync with Antigravity's native sidebar.
 </td>
 </tr>
 </table>
@@ -73,24 +73,18 @@ Select entire cards in Batch Mode to move, prioritize, star, tag, or archive in 
 
 ### 1. Native Instant Switching & Multi-Dimensional FTS5 Search
 - **One-Click Native Switching**: Jumps directly to any conversation via Antigravity's native `toggle-conversation` protocol, paired with a quick Copy Session ID button.
-- **Full-Text FTS5 Search**: Uses Node.js built-in `node:sqlite` to search Antigravity's native `conversations_fts` index across titles, message bodies, code snippets, tags, and notes in milliseconds.
-- **Rich Filters & Sorting**: Filter by All, `★ Starred`, `⏱ Watch Later`, `P1–P5 Priority`, `Officially Archived`, or `Ungrouped`; sort by Recent Activity, Created Time, Priority, or Title.
+- **Full-Text FTS5 Search**: Uses Node.js built-in `node:sqlite` to search Antigravity's native `conversations_fts` index across titles, message bodies, and code snippets in milliseconds.
+- **Rich Filters & Sorting**: Filter and sort across All, Pinned, `★ Starred`, native Groups, native Tags, official Workspaces, and Official Archive status.
 
-### 2. Dual Grouping (Custom Groups + Native Workspaces)
-- **Custom Project Groups**: Create, rename, archive, and delete your own cross-workspace topic groups without affecting Antigravity's native workspaces.
-- **Automatic Workspace Detection**: Parses each conversation's workspace path for instant workspace filtering.
-- **Official Archive Sync**: Detects officially archived conversations, renders a clear **`Officially Archived`** badge, and offers a dedicated filter toggle.
+### 2. 100% Official Native Conversation & Workspace Sync
+- **Direct `ConversationService` Integration**: Pinning, starring, inline renaming, native tags, official groups, archiving, and restoring write through official Antigravity APIs—100% synchronized with the native sidebar.
+- **Official Workspaces & New Conversations**: Automatically reads configured official workspaces for aggregated browsing and lets you start new conversations directly inside any chosen workspace.
 
-### 3. Single-Session Organization & Annotation
-- **Inline Rename & Highlight**: Click `✎` to rename inline (`Enter`/blur saves, `Esc` cancels); renamed titles highlight automatically with 7 color presets or a free color picker.
-- **Pin / Star / Watch Later**: Pin critical threads or flag them as `★ Starred` / `⏱ Watch Later`.
-- **P1–P5 Priorities, Tags & Notes**: Assign color-coded priority levels, multiple searchable tags, and persistent progress notes.
+### 3. Cross-Workspace Transfer & Batch Management
+- **Cross-Workspace Transfer**: Transfer any conversation to another workspace and keep working without rebuilding context from scratch.
+- **Batch Actions & Official Archive Box**: Select multiple sessions to batch-group, tag, star, archive, restore, or execute double-confirmed official permanent deletion.
 
-### 4. Batch Management & Safe Archive Box
-- **Whole-Card Selection**: In Batch Mode, click anywhere on a card to select (or Select All filtered results) to batch-move, change priority, toggle stars, add/remove tags, or archive.
-- **Archive-First Safety**: Main lists only archive rather than hard-deleting; archived conversations and groups live in the dedicated **Archive Box** tab for one-click restore or double-confirmed cleanup.
-
-### 5. Unified Azure Suite UI
+### 4. Unified Azure Suite UI
 - **Neko Glass UI & Shared Theme Center**: Dark/light themes, custom glass dropdowns (`AzureSelect`), 6 official color presets + dual custom pickers + 4 shared slots, sidebar toggle, standalone `Web UI`, and GitHub Release update checks.
 
 <h2 id="architecture">
@@ -102,10 +96,10 @@ Select entire cards in Batch Mode to move, prioritize, star, tag, or archive in 
 
 ```mermaid
 flowchart LR
-  DB["Antigravity Native SQLite<br/>conversation_summaries.db<br/>&amp; conversations_fts"] -->|"100% Read-Only (node:sqlite)"| C["Azure Corridor Sidecar"]
-  JSON["Local Annotations JSON<br/>annotations.v1.json"] <-->|"Groups / Renames / Tags / Priorities"| C
-  C -->|"Native toggle-conversation"| AGY["Instant Conversation Switch"]
-  C -->|"Dedicated Tab"| ARC["Safe Archive Box<br/>Restore / Confirmed Cleanup"]
+  DB["Antigravity Native FTS5<br/>conversations_fts"] -->|"Read-Only Search (node:sqlite)"| C["Azure Corridor Sidecar"]
+  SVC["Official Antigravity<br/>ConversationService &amp; Workspaces"] <-->|"100% Native Two-Way Sync"| C
+  C -->|"Native Protocol"| AGY["Switch / Create / Cross-Workspace Transfer"]
+  C -->|"Two-Way Sync"| ARC["Official Archive Box<br/>Restore / Confirmed Permanent Delete"]
 ```
 
 <h2 id="installation">
@@ -147,11 +141,9 @@ Restart or reload Antigravity (`Ctrl+R`), enable **Azure Corridor** in **Plugins
 
 <br>
 
-- **Groups, Renames, Tags, Notes & Archive State**: `~/.gemini/azure-corridor/annotations.v1.json`
+- **Corridor UI Preferences**: `~/.gemini/azure-corridor/` (all session metadata, groups, tags, and archive state sync directly with Antigravity's native storage)
 - **Azure Suite Sidebar Visibility**: `~/.gemini/azure-sidebar-nav.json`
 - **Shared Azure Suite Theme**: `~/.gemini/azure-theme.json`
-
-> Never modifies or pollutes any native Antigravity database file.
 
 </details>
 

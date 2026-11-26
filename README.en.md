@@ -80,8 +80,9 @@ Batch-group, tag, star, archive, restore, or perform double-confirmed official p
 - **Direct `ConversationService` Integration**: Pinning, starring, inline renaming, native tags, official groups, archiving, and restoring write through official Antigravity APIs—100% synchronized with the native sidebar.
 - **Official Workspaces & New Conversations**: Automatically reads configured official workspaces for aggregated browsing and lets you start new conversations directly inside any chosen workspace.
 
-### 3. Cross-Workspace Transfer & Batch Management
+### 3. Cross-Workspace Transfer, Live Official Model Selection & Batch Management
 - **Cross-Workspace Transfer**: Transfer any conversation to another workspace and keep working without rebuilding context from scratch.
+- **Live Official Model Picker & Current-Model Default**: Both New Conversation and Cross-Workspace Transfer fetch the live list of official Antigravity models (with tier fallbacks), and the default option automatically detects and carries over the official model currently used by the source or active conversation instead of silently dropping back to `flash`.
 - **Batch Actions & Official Archive Box**: Select multiple sessions to batch-group, tag, star, archive, restore, or execute double-confirmed official permanent deletion.
 
 ### 4. Unified Azure Suite UI
@@ -154,19 +155,20 @@ Restart or reload Antigravity (`Ctrl+R`), enable **Azure Corridor** in **Plugins
 </picture>
 </h2>
 
-All **9 Azure Suite plugins** share a unified **Neko Glass UI**, synchronized **Azure Theme Center** (`~/.gemini/azure-theme.json`), and customizable **Sidebar Navigation Hub** (`~/.gemini/azure-sidebar-nav.json`):
+All **10 Azure Suite plugins** share a unified **Neko Glass UI**, synchronized **Azure Theme Center** (`~/.gemini/azure-theme.json`), and customizable **Sidebar Navigation Hub** (`~/.gemini/azure-sidebar-nav.json`):
 
 | Plugin | Repository | Core Capability |
 | --- | --- | --- |
 | ✦ **External Orchestrator** | [antigravity-external-orchestrator](https://github.com/A16Nights/antigravity-external-orchestrator) | Multi-provider external worker routing, custom profiles, circuit breaker & live monitoring |
 | 🪐 **Azure Orbit** | [antigravity-azure-orbit](https://github.com/A16Nights/antigravity-azure-orbit) | Mount external LLM APIs directly into Antigravity's native bottom-left model selector |
 | 🧭 **Azure Compass** | [antigravity-azure-compass](https://github.com/A16Nights/antigravity-azure-compass) | Agent mode presets, live context telemetry with auto /compact & Azure Suite sidebar hub |
-| 🏛️ **Azure Corridor** &nbsp;`✦ This Repo` | [antigravity-azure-corridor](https://github.com/A16Nights/antigravity-azure-corridor) | Read-only FTS5 conversation search, custom project groups, priority tags & safe archive |
+| 🏛️ **Azure Corridor** &nbsp;`✦ This Repo` | [antigravity-azure-corridor](https://github.com/A16Nights/antigravity-azure-corridor) | Pure-native conversation & workspace sync, FTS5 search, cross-workspace transfer, live official model picker & official archive |
 | 🌌 **Lanxi Memory** | [antigravity-lanxi-memory](https://github.com/A16Nights/antigravity-lanxi-memory) | 5-layer Markdown cognitive graph, CJK FTS5, tidal forgetting curves & starfield UI |
 | 💎 **Soul.md Studio** | [antigravity-soul-md](https://github.com/A16Nights/antigravity-soul-md) | Hot-swappable persona cards, workspace binding, external-model anchor & layered memory |
 | 💭 **Think-ZH** | [antigravity-think-zh](https://github.com/A16Nights/antigravity-think-zh) | Simplified Chinese / English reasoning switcher with dual-channel anti-drift hooks |
 | 🔮 **Azure Prism** | [antigravity-azure-prism](https://github.com/A16Nights/antigravity-azure-prism) | Native MCP App Chain-of-Thought viewer with keyless zero-token MT & LLM translation |
 | 🪄 **Azure Wand** | [antigravity-azure-wand](https://github.com/A16Nights/antigravity-azure-wand) | Low-intrusion Windows desktop & web automation with 15-state independent AI cursor, pack gallery & importer |
+| 🍃 **Azure Drop** | [antigravity-azure-drop](https://github.com/A16Nights/antigravity-azure-drop) | Zero-`app.asar` drag/paste native mention pills, lossless PNG capture, image thumbnails/lightbox & breadcrumb context menu |
 
 ---
 

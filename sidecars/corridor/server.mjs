@@ -8,6 +8,7 @@ import path from "node:path";
 import crypto from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { CorridorStore } from "../../lib/store.mjs";
+import { listOfficialModels, resolveCurrentOfficialModel } from "../../lib/conversation-api.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const INDEX_HTML_PATH = path.join(__dirname, "index.html");
@@ -159,6 +160,21 @@ const server = http.createServer(async (req, res) => {
       return sendJson(res, 200, { ok: true, ...store.getNativeStatus() });
     }
 
+    if (req.method === "GET" && pathname === "/api/models") {
+      const force = url.searchParams.get("force") === "1";
+      const sessionId = String(url.searchParams.get("sessionId") || "").trim();
+      const info = await listOfficialModels({ force });
+      const current = await resolveCurrentOfficialModel({ sessionId, force: false });
+      return sendJson(res, 200, {
+        ok: true,
+        models: info.models || [],
+        defaultModelId: info.defaultModelId || "",
+        currentModelId: current.modelId || "",
+        currentModelLabel: current.label || "",
+        currentModelSource: current.source || ""
+      });
+    }
+
     if (req.method === "GET" && pathname === "/api/state") {
       const q = url.searchParams.get("q") || "";
       const forceNative = url.searchParams.get("force") === "1";
@@ -173,7 +189,8 @@ const server = http.createServer(async (req, res) => {
         prompt: body.prompt || "",
         model: body.model || "",
         tags: Array.isArray(body.tags) ? body.tags : [],
-        projectId: body.projectId || ""
+        projectId: body.projectId || "",
+        sourceConversationId: body.sourceConversationId || ""
       });
       return sendJson(res, 200, { ok: true, ...result });
     }

@@ -1,7 +1,7 @@
 {
   "name": "azure-corridor",
   "displayName": "苍蓝回廊",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "苍蓝回廊（Azure Corridor）— 纯官方原生 Antigravity 2.35+ 会话与工作区管理插件：100% 直连官方 ConversationService 与工作区配置，支持 FTS5 正文全文搜索、官方工作区聚合与新建、置顶/收藏/原生标签与官方分组、官方归档箱、批量操作、跨工作区转移续聊与官方永久删除。",
   "logo": "assets/logo.svg",
   "suggestedPrompts": [

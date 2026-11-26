@@ -359,12 +359,12 @@
         <input id="newSessionTitle" placeholder="例如：插件新版本适配..." />
       </div>
       <div class="field">
-        <label>模型档位</label>
+        <label>选择官方模型</label>
         <select id="newSessionModel">
-          <option value="">默认</option>
-          <option value="pro">pro</option>
-          <option value="flash">flash</option>
-          <option value="flash_lite">flash_lite</option>
+          <option value="">默认（当前使用模型）</option>
+          <option value="pro">通用档位：pro</option>
+          <option value="flash">通用档位：flash</option>
+          <option value="flash_lite">通用档位：flash_lite</option>
         </select>
       </div>
       <div class="field">
@@ -394,12 +394,12 @@
         <select id="transferTargetProject"></select>
       </div>
       <div class="field">
-        <label>模型档位</label>
+        <label>选择官方模型</label>
         <select id="transferModel">
-          <option value="">默认</option>
-          <option value="pro">pro</option>
-          <option value="flash">flash</option>
-          <option value="flash_lite">flash_lite</option>
+          <option value="">默认（当前使用模型）</option>
+          <option value="pro">通用档位：pro</option>
+          <option value="flash">通用档位：flash</option>
+          <option value="flash_lite">通用档位：flash_lite</option>
         </select>
       </div>
       <div class="field">
@@ -577,6 +577,69 @@
       if (selectedId && [...selectEl.options].some((o) => o.value === selectedId)) {
         selectEl.value = selectedId;
       }
+    }
+
+    function getHostConversationId() {
+      try {
+        return String(new URLSearchParams(location.search).get("conversationId") || "").trim();
+      } catch {
+        return "";
+      }
+    }
+
+    let officialModelsCache = [];
+    let currentOfficialModelMeta = { modelId: "", label: "", source: "" };
+    async function loadOfficialModels(force = false, sessionId = "") {
+      const sid = String(sessionId || getHostConversationId() || "").trim();
+      if (!force && !sessionId && officialModelsCache.length && currentOfficialModelMeta.modelId) {
+        return { models: officialModelsCache, current: currentOfficialModelMeta };
+      }
+      try {
+        const tok = new URLSearchParams(location.search).get("token") || "";
+        const headers = tok ? { "X-Codeium-Sidecar-Token": tok } : {};
+        const qs = new URLSearchParams();
+        if (force) qs.set("force", "1");
+        if (sid) qs.set("sessionId", sid);
+        if (tok) qs.set("token", tok);
+        const r = await fetch("/api/models" + (qs.toString() ? "?" + qs.toString() : ""), { headers });
+        const d = await r.json();
+        if (r.ok && d.ok && Array.isArray(d.models)) {
+          officialModelsCache = d.models;
+          const meta = {
+            modelId: String(d.currentModelId || "").trim(),
+            label: String(d.currentModelLabel || "").trim(),
+            source: String(d.currentModelSource || "").trim()
+          };
+          if (!sessionId) currentOfficialModelMeta = meta;
+          return { models: officialModelsCache, current: meta };
+        }
+      } catch {}
+      return { models: officialModelsCache, current: currentOfficialModelMeta };
+    }
+    setTimeout(() => loadOfficialModels(false, ""), 300);
+
+    function populateModelSelect(selectEl, selectedVal = "", currentMeta = null) {
+      if (!selectEl) return;
+      const list = officialModelsCache || [];
+      const cur = currentMeta || currentOfficialModelMeta || {};
+      const defaultOptText = cur.label
+        ? `默认（当前使用：${cur.label}）`
+        : "默认（当前使用模型）";
+      const opts = [`<option value="">${esc(defaultOptText)}</option>`];
+      for (const m of list) {
+        const suffix = m.isDefault ? " · 推荐" : (m.tag ? ` · ${m.tag}` : "");
+        opts.push(`<option value="${esc(m.modelId)}">${esc(m.label + suffix)}</option>`);
+      }
+      opts.push(`<option value="pro">通用档位：pro</option>`);
+      opts.push(`<option value="flash">通用档位：flash</option>`);
+      opts.push(`<option value="flash_lite">通用档位：flash_lite</option>`);
+      selectEl.innerHTML = opts.join("");
+      if (selectedVal && [...selectEl.options].some((o) => o.value === selectedVal)) {
+        selectEl.value = selectedVal;
+      } else {
+        selectEl.value = "";
+      }
+      selectEl.dispatchEvent(new Event("change", { bubbles: true }));
     }
 
     function getFilteredSessions(list) {
@@ -1011,8 +1074,9 @@
     function openNewSessionModal(defaultProjectId = "") {
       const preferred = defaultProjectId || (state.projectFilter !== "all" ? state.projectFilter : "");
       populateProjectSelect($("newSessionProject"), preferred);
+      populateModelSelect($("newSessionModel"), "", currentOfficialModelMeta);
+      loadOfficialModels(false, "").then((res) => populateModelSelect($("newSessionModel"), $("newSessionModel").value, res?.current));
       $("newSessionTitle").value = "";
-      $("newSessionModel").value = "";
       $("newSessionTags").value = "";
       $("newSessionPrompt").value = "";
       $("newSessionModal").classList.add("show");
@@ -1023,7 +1087,12 @@
       state.transferSourceId = item.id;
       const others = (state.data.projects || []).filter((p) => p.id !== item.projectId);
       populateProjectSelect($("transferTargetProject"), others[0]?.id || "");
-      $("transferModel").value = "";
+      populateModelSelect($("transferModel"), "", currentOfficialModelMeta);
+      loadOfficialModels(false, item.id).then((res) => {
+        if (state.transferSourceId === item.id) {
+          populateModelSelect($("transferModel"), $("transferModel").value, res?.current);
+        }
+      });
       $("transferNote").value = "";
       $("transferArchiveSource").checked = true;
       $("transferModal").classList.add("show");
@@ -1126,7 +1195,7 @@
         const model = $("newSessionModel").value.trim();
         const prompt = $("newSessionPrompt").value.trim();
         const tags = $("newSessionTags").value.split(/[,，]/).map((s) => s.trim()).filter(Boolean);
-        const r = await postApi("/api/session/create", { projectId, title, model, prompt, tags });
+        const r = await postApi("/api/session/create", { projectId, title, model, prompt, tags, sourceConversationId: getHostConversationId() });
         $("newSessionModal").classList.remove("show");
         const newId = r?.conversation?.id || "";
         showToast("已创建官方会话");

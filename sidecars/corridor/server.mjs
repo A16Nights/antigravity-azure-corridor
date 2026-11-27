@@ -2,6 +2,8 @@ import { checkGithubUpdate } from "../../lib/update-checker.mjs";
 import { isLeftSidebarEnabled, setLeftSidebarEnabled, listOwnedPluginsNavState, registerSidecarRuntime, refreshAntigravityMcpServers, injectSidebarToggleWidget } from "../../lib/sidebar-nav.mjs";
 import { handleAzureThemeHttp } from "../../lib/azure-theme.mjs";
 import { injectAzureUiKit } from "../../lib/azure-ui-kit.mjs";
+import { handleAzureOnboardingHttp, injectAzureOnboarding } from "../../lib/azure-onboarding.mjs";
+import { CORRIDOR_ONBOARDING_GUIDE } from "./onboarding-guide.mjs";
 import http from "node:http";
 import fs from "node:fs";
 import path from "node:path";
@@ -113,7 +115,13 @@ const server = http.createServer(async (req, res) => {
         "Content-Type": "text/html; charset=utf-8",
         "Cache-Control": "no-store"
       });
-      res.end(injectAzureUiKit(injectSidebarToggleWidget(html, "azure-corridor"), "azure-corridor"));
+      res.end(
+        injectAzureOnboarding(
+          injectAzureUiKit(injectSidebarToggleWidget(html, "azure-corridor"), "azure-corridor"),
+          "azure-corridor",
+          CORRIDOR_ONBOARDING_GUIDE
+        )
+      );
       return;
     }
 
@@ -132,6 +140,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     if (await handleAzureThemeHttp(req, res)) return;
+    if (await handleAzureOnboardingHttp(req, res, "azure-corridor", CORRIDOR_ONBOARDING_GUIDE.version)) return;
     if (req.method === "GET" && pathname === "/api/sidebar-nav") {
       sendJson(res, 200, {
         ok: true,
@@ -180,6 +189,14 @@ const server = http.createServer(async (req, res) => {
       const forceNative = url.searchParams.get("force") === "1";
       const state = await store.buildState({ query: q, forceNative });
       return sendJson(res, 200, { ok: true, ...state });
+    }
+
+    if (req.method === "POST" && pathname === "/api/prefs") {
+      const body = await readBody(req);
+      const uiPrefs = store.saveUiPrefs({
+        pinnedFilterTags: Array.isArray(body.pinnedFilterTags) ? body.pinnedFilterTags : undefined
+      });
+      return sendJson(res, 200, { ok: true, uiPrefs });
     }
 
     if (req.method === "POST" && pathname === "/api/session/create") {

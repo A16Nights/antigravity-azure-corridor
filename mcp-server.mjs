@@ -27,7 +27,7 @@ async function handleMessage(msg) {
           result: {
             protocolVersion: params?.protocolVersion || PROTOCOL_VERSION,
             capabilities: { tools: {}, resources: {} },
-            serverInfo: { name: "azure-corridor-nav", version: "1.2.2" }
+            serverInfo: { name: "azure-corridor-nav", version: "1.2.3" }
           }
         });
         return;

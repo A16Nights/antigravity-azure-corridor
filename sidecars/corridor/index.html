@@ -139,6 +139,49 @@
       font-weight: 700 !important;
       box-shadow: 0 2px 10px rgba(59, 130, 246, 0.36), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
     }
+    .chip-add {
+      border-style: dashed;
+      color: var(--accent);
+      background: transparent;
+    }
+    .chip-add:hover {
+      border-style: solid;
+      background: var(--accent-soft);
+      color: var(--text);
+    }
+    .qt-picker {
+      display: flex; flex-wrap: wrap; gap: 7px; max-height: 220px; overflow-y: auto;
+      padding: 10px; border-radius: 10px; background: var(--bg); border: 1px solid var(--border);
+      margin-bottom: 10px;
+    }
+    .qt-chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 5px 10px; border-radius: 999px; font-size: 11.5px; cursor: pointer; user-select: none;
+      border: 1px solid var(--border); background: var(--bg-card); color: var(--text-muted);
+      transition: all 0.15s ease;
+    }
+    .qt-chip:hover {
+      border-color: var(--accent); background: var(--bg-hover); color: var(--text); transform: translateY(-1px);
+    }
+    .qt-chip.selected {
+      background: var(--neko-grad, linear-gradient(135deg, #2563eb 0%, #3b82f6 58%, #7c3aed 100%));
+      border-color: rgba(147, 197, 253, 0.78);
+      color: #ffffff;
+      font-weight: 600;
+      box-shadow: 0 3px 12px rgba(59, 130, 246, 0.36), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+    }
+    .qt-add-row { display: flex; gap: 6px; align-items: center; }
+    .qt-add-row input { flex: 1; }
+    .adv-details {
+      margin-top: 8px; padding: 6px 9px; border-radius: 8px;
+      border: 1px dashed var(--border); background: rgba(255, 255, 255, 0.02);
+    }
+    .adv-details summary {
+      cursor: pointer; font-size: 11.5px; color: var(--text-muted); user-select: none;
+      transition: color 0.15s;
+    }
+    .adv-details summary:hover { color: var(--text); }
+    .adv-details[open] summary { margin-bottom: 8px; }
 
     .batch-bar {
       display: none; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;
@@ -189,7 +232,13 @@
     .badge-proj { color: var(--accent); background: var(--accent-soft); }
     .badge-grp { color: var(--amber); background: rgba(245, 158, 11, 0.14); }
     .badge-run { color: var(--green); background: rgba(52, 211, 153, 0.14); }
-    .badge-tag { color: var(--purple); background: rgba(167, 139, 250, 0.14); }
+    .badge-tag {
+      color: var(--purple); background: rgba(167, 139, 250, 0.14);
+      cursor: pointer; border: 1px solid transparent; transition: all 0.15s ease;
+    }
+    .badge-tag:hover {
+      border-color: rgba(167, 139, 250, 0.55); background: rgba(167, 139, 250, 0.24); transform: translateY(-1px);
+    }
     .card-actions { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; margin-top: 8px; }
     .icon-btn,
     .card-actions button.seg-btn.icon-btn {
@@ -293,7 +342,7 @@
 
     <div class="toolbar" id="sessionToolbar">
       <div class="toolbar-row">
-        <input class="search-box" id="searchInput" placeholder="搜索标题 / ID / 工作区 / 分组 / 标签 / 对话正文 (FTS5)..." />
+        <input class="search-box" id="searchInput" placeholder="搜索标题 / ID / 工作区 / 标签 / 对话正文 (FTS5)..." />
         <button class="btn btn-sm" id="btnBatchToggle">批量管理</button>
       </div>
       <div class="toolbar-row">
@@ -305,11 +354,13 @@
           <option value="title_asc">标题 A→Z</option>
         </select>
       </div>
-      <div class="toolbar-row">
+      <div class="toolbar-row" id="quickFilterRow">
         <span class="chip active" data-quick="all">全部</span>
         <span class="chip" data-quick="pinned">📌 置顶</span>
         <span class="chip" data-quick="starred">★ 收藏</span>
         <span class="chip" data-quick="running">● 运行中</span>
+        <span id="quickTagChips" style="display:contents;"></span>
+        <span class="chip chip-add" id="btnEditQuickTags" title="自定义要显示在这里的快捷标签筛选按钮">+ 快捷标签</span>
       </div>
     </div>
 
@@ -325,7 +376,7 @@
   <!-- 编辑官方会话属性弹窗 -->
   <div class="modal-backdrop" id="editModal">
     <div class="modal">
-      <h3>编辑官方会话属性</h3>
+      <h3>编辑会话标题与标签</h3>
       <div class="field">
         <label>官方标题（同步至 Antigravity 左侧边栏）</label>
         <input id="editTitle" placeholder="输入会话标题..." />
@@ -334,11 +385,13 @@
         <label>官方标签（逗号分隔，写入原生 annotations.tags）</label>
         <input id="editTags" placeholder="例如：插件, 待办, 重要" />
       </div>
-      <div class="field">
-        <label>官方分组 ID（annotations.conversationGroupId，留空则移出分组）</label>
-        <input id="editGroupId" list="officialGroupDatalist" placeholder="例如：plugin-dev 或留空..." />
-        <datalist id="officialGroupDatalist"></datalist>
-      </div>
+      <details class="adv-details" id="editGroupDetails">
+        <summary>高级兼容项：官方分组 ID（一般可留空）</summary>
+        <div class="field" style="margin-bottom:0;">
+          <input id="editGroupId" list="officialGroupDatalist" placeholder="留空则不设分组..." />
+          <datalist id="officialGroupDatalist"></datalist>
+        </div>
+      </details>
       <div class="modal-foot">
         <button class="btn" id="editCancel">取消</button>
         <button class="btn btn-primary" id="editSave">同步到官方</button>
@@ -447,6 +500,29 @@
     </div>
   </div>
 
+  <!-- 自定义快捷标签栏弹窗 -->
+  <div class="modal-backdrop" id="quickTagsModal">
+    <div class="modal">
+      <h3>自定义快捷标签筛选栏</h3>
+      <p style="margin: 0 0 10px; color: var(--text-muted); font-size: 12px;">
+        勾选你想钉在快捷筛选栏（置顶 / 收藏 / 运行中旁边）的常用标签，点击即可一键筛选，支持多选并持久化保存。
+      </p>
+      <div class="qt-picker" id="qtPickerList"></div>
+      <div class="field">
+        <label>手动添加常用标签（也可提前钉选尚未贴标的标签）</label>
+        <div class="qt-add-row">
+          <input id="qtCustomInput" placeholder="输入标签名后点添加，例如：插件、待办..." />
+          <button class="btn btn-sm" id="qtCustomAddBtn" type="button">+ 添加</button>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn" id="qtClearBtn" type="button" style="margin-right:auto;">清空全部</button>
+        <button class="btn" id="qtCancelBtn" type="button">取消</button>
+        <button class="btn btn-primary" id="qtSaveBtn" type="button">保存快捷栏</button>
+      </div>
+    </div>
+  </div>
+
   <div class="toast" id="toast"></div>
 
   <script>
@@ -456,6 +532,8 @@
       projectFilter: "all",
       tagFilter: "all",
       quickFilter: "all",
+      pinnedFilterTags: [],
+      qtDraftTags: [],
       sort: "updated_desc",
       batchMode: false,
       selected: new Set(),
@@ -521,6 +599,9 @@
       const json = await res.json();
       if (json.ok) {
         state.data = json;
+        if (json.uiPrefs && Array.isArray(json.uiPrefs.pinnedFilterTags)) {
+          state.pinnedFilterTags = json.uiPrefs.pinnedFilterTags;
+        }
         updateFilterOptions();
         render();
       }
@@ -557,15 +638,88 @@
 
       const tagSel = $("tagFilter");
       const prevTag = state.tagFilter;
+      const mergedTags = Array.from(new Set([...(state.data.allTags || []), ...(state.pinnedFilterTags || [])]))
+        .sort((a, b) => a.localeCompare(b, "zh-CN"));
       tagSel.innerHTML = `<option value="all">全部标签</option>` +
-        (state.data.allTags || []).map((t) => `<option value="${esc(t)}"># ${esc(t)}</option>`).join("");
+        mergedTags.map((t) => `<option value="${esc(t)}"># ${esc(t)}</option>`).join("");
       tagSel.value = [...tagSel.options].some((o) => o.value === prevTag) ? prevTag : "all";
       state.tagFilter = tagSel.value;
+      renderQuickTagChips();
 
       const dl = $("officialGroupDatalist");
       if (dl) {
         dl.innerHTML = (state.data.allGroups || []).map((g) => `<option value="${esc(g)}"></option>`).join("");
       }
+    }
+
+    function syncQuickChipsActive() {
+      document.querySelectorAll("#quickFilterRow [data-quick]").forEach((c) => {
+        const q = c.getAttribute("data-quick");
+        if (q === "all") {
+          c.classList.toggle("active", state.quickFilter === "all" && state.tagFilter === "all");
+        } else {
+          c.classList.toggle("active", state.quickFilter === q);
+        }
+      });
+      document.querySelectorAll("#quickTagChips [data-pin-tag]").forEach((c) => {
+        c.classList.toggle("active", c.getAttribute("data-pin-tag") === state.tagFilter);
+      });
+    }
+
+    function renderQuickTagChips() {
+      const wrap = $("quickTagChips");
+      if (!wrap) return;
+      const tags = state.pinnedFilterTags || [];
+      wrap.innerHTML = tags.map((t) =>
+        `<span class="chip chip-tag ${state.tagFilter === t ? "active" : ""}" data-pin-tag="${esc(t)}" title="点击按 #${esc(t)} 筛选（再次点击取消）"># ${esc(t)}</span>`
+      ).join("");
+      wrap.querySelectorAll("[data-pin-tag]").forEach((el) => {
+        el.onclick = () => {
+          const t = el.getAttribute("data-pin-tag") || "";
+          state.tagFilter = state.tagFilter === t ? "all" : t;
+          $("tagFilter").value = state.tagFilter;
+          $("tagFilter").dispatchEvent(new Event("change", { bubbles: true }));
+          state.renderLimit = 60;
+          syncQuickChipsActive();
+          render();
+        };
+      });
+      syncQuickChipsActive();
+    }
+
+    function renderQuickTagsPicker() {
+      const box = $("qtPickerList");
+      if (!box) return;
+      const all = Array.from(new Set([...(state.data.allTags || []), ...(state.qtDraftTags || [])]))
+        .sort((a, b) => a.localeCompare(b, "zh-CN"));
+      if (!all.length) {
+        box.innerHTML = `<span style="font-size:12px; color:var(--text-muted);">当前还没有给会话打过标签，可在下方输入常用标签名提前钉选。</span>`;
+        return;
+      }
+      const selectedSet = new Set(state.qtDraftTags || []);
+      box.innerHTML = all.map((t) => `
+        <span class="qt-chip ${selectedSet.has(t) ? "selected" : ""}" data-qt-opt="${esc(t)}">
+          <span>${selectedSet.has(t) ? "✓" : "+"}</span>
+          <span>#${esc(t)}</span>
+        </span>
+      `).join("");
+      box.querySelectorAll("[data-qt-opt]").forEach((el) => {
+        el.onclick = () => {
+          const tag = el.getAttribute("data-qt-opt") || "";
+          const idx = state.qtDraftTags.indexOf(tag);
+          if (idx >= 0) state.qtDraftTags.splice(idx, 1);
+          else if (state.qtDraftTags.length < 16) state.qtDraftTags.push(tag);
+          else showToast("最多可钉选 16 个快捷标签");
+          renderQuickTagsPicker();
+        };
+      });
+    }
+
+    function openQuickTagsModal() {
+      state.qtDraftTags = [...(state.pinnedFilterTags || [])];
+      $("qtCustomInput").value = "";
+      renderQuickTagsPicker();
+      $("quickTagsModal").classList.add("show");
     }
 
     function populateProjectSelect(selectEl, selectedId = "") {
@@ -672,7 +826,6 @@
           <button class="btn btn-sm" id="bClear">清空</button>
           <button class="btn btn-sm" id="bPin">📌 置顶</button>
           <button class="btn btn-sm" id="bStar">★ 收藏</button>
-          <button class="btn btn-sm" id="bGroup">设官方分组</button>
           <button class="btn btn-sm" id="bAddTag">+ 官方标签</button>
           <button class="btn btn-sm btn-primary" id="bArchive">批量归档</button>
         `;
@@ -688,18 +841,6 @@
           if (!state.selected.size) return showToast("请先勾选会话");
           await postApi("/api/session/batch", { ids: [...state.selected], action: "star", payload: { value: true } });
           showToast(`已收藏 ${state.selected.size} 条官方会话`);
-          await fetchState(true);
-        };
-        $("bGroup").onclick = async () => {
-          if (!state.selected.size) return showToast("请先勾选会话");
-          const gid = await openInputDialog({
-            title: "批量设置官方分组",
-            desc: `为已选中的 ${state.selected.size} 条会话设置官方 conversationGroupId（留空则移出分组）：`,
-            placeholder: "输入分组 ID 或留空"
-          });
-          if (gid === null) return;
-          await postApi("/api/session/batch", { ids: [...state.selected], action: "setGroup", payload: { conversationGroupId: gid.trim() } });
-          showToast("已同步官方分组");
           await fetchState(true);
         };
         $("bAddTag").onclick = async () => {
@@ -868,7 +1009,7 @@
                   ${s.stepCount ? `<span>${s.stepCount} 步</span>` : ""}
                   <span>${fmtTime(s.lastModifiedTime)}</span>
                 </div>
-                ${s.tags.length ? `<div class="meta-row">${s.tags.map((t) => `<span class="badge badge-tag">#${esc(t)}</span>`).join("")}</div>` : ""}
+                ${s.tags.length ? `<div class="meta-row">${s.tags.map((t) => `<span class="badge badge-tag" data-filter-tag="${esc(t)}" title="点击按 #${esc(t)} 筛选">#${esc(t)}</span>`).join("")}</div>` : ""}
               </div>
             </div>
           </div>
@@ -876,7 +1017,7 @@
             ${state.tab === "sessions" ? `
               <button class="seg-btn icon-btn ${s.pinned ? "on-pin" : ""}" data-act="pin" data-id="${esc(s.id)}">置顶</button>
               <button class="seg-btn icon-btn ${s.starred ? "on-fav" : ""}" data-act="star" data-id="${esc(s.id)}">★ 收藏</button>
-              <button class="icon-btn" data-act="edit" data-id="${esc(s.id)}">标签/分组</button>
+              <button class="icon-btn" data-act="edit" data-id="${esc(s.id)}">编辑标签</button>
               <button class="icon-btn" data-act="transfer" data-id="${esc(s.id)}">转移工作区</button>
               <button class="icon-btn" data-act="copy" data-id="${esc(s.id)}">复制ID</button>
               <button class="icon-btn" data-act="archive" data-id="${esc(s.id)}">归档</button>
@@ -928,6 +1069,19 @@
           if (state.batchMode) return;
           e.stopPropagation();
           openConversation(el.getAttribute("data-open"));
+        };
+      });
+
+      area.querySelectorAll("[data-filter-tag]").forEach((el) => {
+        el.onclick = (e) => {
+          if (state.batchMode) return;
+          e.stopPropagation();
+          const t = el.getAttribute("data-filter-tag") || "all";
+          state.tagFilter = state.tagFilter === t ? "all" : t;
+          $("tagFilter").value = state.tagFilter;
+          state.renderLimit = 60;
+          syncQuickChipsActive();
+          render();
         };
       });
 
@@ -1068,6 +1222,8 @@
       $("editTitle").value = item.title || "";
       $("editTags").value = (item.tags || []).join(", ");
       $("editGroupId").value = item.conversationGroupId || "";
+      const grpDet = $("editGroupDetails");
+      if (grpDet) grpDet.open = Boolean(item.conversationGroupId);
       $("editModal").classList.add("show");
     }
 
@@ -1158,17 +1314,67 @@
       searchTimer = setTimeout(() => fetchState(), 220);
     };
     $("projectFilter").onchange = (e) => { state.projectFilter = e.target.value; state.renderLimit = 60; render(); };
-    $("tagFilter").onchange = (e) => { state.tagFilter = e.target.value; state.renderLimit = 60; render(); };
+    $("tagFilter").onchange = (e) => {
+      state.tagFilter = e.target.value;
+      state.renderLimit = 60;
+      syncQuickChipsActive();
+      render();
+    };
     $("sortSelect").onchange = (e) => { state.sort = e.target.value; render(); };
-    document.querySelectorAll("[data-quick]").forEach((ch) => {
+    document.querySelectorAll("#quickFilterRow [data-quick]").forEach((ch) => {
       ch.onclick = () => {
-        state.quickFilter = ch.getAttribute("data-quick");
+        const q = ch.getAttribute("data-quick");
+        if (q === "all") {
+          state.quickFilter = "all";
+          state.tagFilter = "all";
+          $("tagFilter").value = "all";
+        } else {
+          state.quickFilter = state.quickFilter === q ? "all" : q;
+        }
         state.renderLimit = 60;
-        document.querySelectorAll("[data-quick]").forEach((c) => c.classList.remove("active"));
-        ch.classList.add("active");
+        syncQuickChipsActive();
         render();
       };
     });
+    $("btnEditQuickTags").onclick = () => openQuickTagsModal();
+    $("qtCancelBtn").onclick = () => $("quickTagsModal").classList.remove("show");
+    $("quickTagsModal").onclick = (e) => { if (e.target === $("quickTagsModal")) $("quickTagsModal").classList.remove("show"); };
+    $("qtClearBtn").onclick = () => { state.qtDraftTags = []; renderQuickTagsPicker(); };
+    const addCustomQuickTag = () => {
+      const raw = $("qtCustomInput").value.trim().replace(/^#+/, "").trim();
+      if (!raw) return;
+      const parts = raw.split(/[,，]/).map((s) => s.trim()).filter(Boolean);
+      for (const p of parts) {
+        if (!state.qtDraftTags.includes(p)) {
+          if (state.qtDraftTags.length >= 16) {
+            showToast("最多可钉选 16 个快捷标签");
+            break;
+          }
+          state.qtDraftTags.push(p);
+        }
+      }
+      $("qtCustomInput").value = "";
+      renderQuickTagsPicker();
+    };
+    $("qtCustomAddBtn").onclick = addCustomQuickTag;
+    $("qtCustomInput").onkeydown = (e) => { if (e.key === "Enter") { e.preventDefault(); addCustomQuickTag(); } };
+    $("qtSaveBtn").onclick = async () => {
+      const btn = $("qtSaveBtn");
+      if (btn.disabled) return;
+      btn.disabled = true;
+      try {
+        const r = await postApi("/api/prefs", { pinnedFilterTags: state.qtDraftTags });
+        if (r?.uiPrefs?.pinnedFilterTags) {
+          state.pinnedFilterTags = r.uiPrefs.pinnedFilterTags;
+        } else {
+          state.pinnedFilterTags = [...state.qtDraftTags];
+        }
+        $("quickTagsModal").classList.remove("show");
+        updateFilterOptions();
+        render();
+        showToast(state.pinnedFilterTags.length ? `已保存 ${state.pinnedFilterTags.length} 个快捷标签` : "已清空快捷标签");
+      } catch {} finally { btn.disabled = false; }
+    };
 
     $("btnBatchToggle").onclick = () => {
       state.batchMode = !state.batchMode;

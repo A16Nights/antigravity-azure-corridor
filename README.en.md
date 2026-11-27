@@ -4,7 +4,7 @@
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/readme/hero-en-dark.svg">
-  <img src="assets/readme/hero-en-light.svg" alt="Azure Corridor · Azure Suite" width="100%">
+  <img src="assets/readme/hero-en-light.svg" alt="Azure Corridor — Conversation &amp; Workspace Manager" width="100%">
 </picture>
 
 <p>
@@ -17,7 +17,7 @@
 </p>
 
 <p>
-  <strong>100% native Antigravity 2.35+ ConversationService &amp; Workspace manager · FTS5 full-text search · cross-workspace transfer · native tags, groups &amp; archive sync</strong>
+  <strong>Azure Corridor — Conversation &amp; Workspace Manager · 100% Native Sync · FTS5 Full-Text Search · Custom Quick Tags · Cross-Workspace Transfer · Interactive Onboarding</strong>
 </p>
 
 <p>
@@ -26,27 +26,27 @@
 
 </div>
 
-Pure-native conversation & workspace workbench (Sidecar + standalone Web UI) for **Google Antigravity 2.35+**. Syncs 100% directly with Antigravity's official `ConversationService` and workspace configuration while querying native `conversations_fts` via `node:sqlite` for millisecond full-text search, workspace browsing & creation, pinning/starring, native tags & groups, official Archive Box, batch actions, cross-workspace transfer, and official permanent deletion.
+**Azure Corridor — Conversation & Workspace Manager** is a pure-native conversation and workspace workbench (Sidecar + standalone Web UI) for **Google Antigravity 2.35+**. It connects 100% directly to Antigravity's official `ConversationService` and workspace configuration while querying native `conversations_fts` via `node:sqlite` for millisecond full-text search, workspace browsing & creation, a customizable Quick Tag filter bar, live official model selection (defaulting to your current active model), cross-workspace transfer, batch management, the official Archive Box, and an interactive 5-step first-run onboarding guide.
 
 <table>
 <tr>
 <td width="50%" valign="top">
-<h4>⚡ Instant Switch & FTS5 Search</h4>
-Queries native <code>conversations_fts</code> via built-in <code>node:sqlite</code> in milliseconds across titles, full bodies, and code snippets; click any session to switch natively.
+<h4>⚡ Instant Switch &amp; FTS5 Search</h4>
+Queries native <code>conversations_fts</code> via built-in <code>node:sqlite</code> in milliseconds across titles, tags, bodies, and code snippets; click any title to switch natively.
 </td>
 <td width="50%" valign="top">
-<h4>🗂️ 100% Official Native Sync</h4>
-Connects directly to Antigravity's <code>ConversationService</code> and workspaces to stay in full two-way sync with native groups, tags, pins, stars, and archive states.
+<h4>🏷️ 100% Native Sync &amp; Custom Quick Tags</h4>
+Connects directly to Antigravity's <code>ConversationService</code> for pins, stars, native tags, and archive states; pin your favorite <code>#tags</code> right onto the top quick-filter bar.
 </td>
 </tr>
 <tr>
 <td width="50%" valign="top">
-<h4>🔀 Create &amp; Cross-Workspace Transfer</h4>
-Spin up new conversations inside any official workspace or transfer an existing conversation to another workspace to continue seamlessly.
+<h4>🔀 Live Model Picker &amp; Cross-Workspace Transfer</h4>
+Fetches live official Antigravity models and automatically carries over the current conversation's model by default; transfer any session across workspaces seamlessly.
 </td>
 <td width="50%" valign="top">
-<h4>📦 Batch Actions &amp; Official Archive Box</h4>
-Batch-group, tag, star, archive, restore, or perform double-confirmed official permanent deletion in full sync with Antigravity's native sidebar.
+<h4>🧭 5-Step Interactive Guide &amp; Official Archive Box</h4>
+First-run interactive walkthrough with live UI control spotlighting (reopen anytime via <code>? Guide</code>); batch actions and official archive sync with double-confirmed deletion.
 </td>
 </tr>
 </table>
@@ -59,9 +59,15 @@ Batch-group, tag, star, archive, restore, or perform double-confirmed official p
 </h2>
 
 <p align="center">
-  <a href="assets/readme/preview-panel.png"><img src="assets/readme/preview-panel.png" alt="Azure Corridor Panel Preview" width="90%"></a>
-  <br><strong>Azure Corridor · FTS5 Full-Text Search &amp; Conversation Workbench</strong>
-  <br><sub>Instant FTS5 search, group/tag/sort filters, official archive badges, inline rename, pin/star/watch-later &amp; safe archiving</sub>
+  <a href="assets/readme/preview-panel.png"><img src="assets/readme/preview-panel.png" alt="Azure Corridor — Conversation &amp; Workspace Manager Main Panel" width="90%"></a>
+  <br><strong>Azure Corridor — Conversation &amp; Workspace Manager · Main Workbench</strong>
+  <br><sub>Instant FTS5 full-text search, workspace/tag/sort filters, customizable Quick Tag pills alongside All / Pinned / Starred / Running, inline tag editing &amp; cross-workspace transfer</sub>
+</p>
+
+<p align="center">
+  <a href="assets/readme/preview-onboarding.png"><img src="assets/readme/preview-onboarding.png" alt="Azure Corridor First-Run Interactive Onboarding Modal" width="68%"></a>
+  <br><strong>First-Run 5-Step Interactive Onboarding Guide</strong>
+  <br><sub>Step-by-step walkthrough with real-UI spotlight highlighting and a floating return bar, persisted across restarts and reopenable anytime from the topbar <code>? Guide</code> button</sub>
 </p>
 
 <h2 id="features">
@@ -71,21 +77,22 @@ Batch-group, tag, star, archive, restore, or perform double-confirmed official p
 </picture>
 </h2>
 
-### 1. Native Instant Switching & Multi-Dimensional FTS5 Search
-- **One-Click Native Switching**: Jumps directly to any conversation via Antigravity's native `toggle-conversation` protocol, paired with a quick Copy Session ID button.
-- **Full-Text FTS5 Search**: Uses Node.js built-in `node:sqlite` to search Antigravity's native `conversations_fts` index across titles, message bodies, and code snippets in milliseconds.
-- **Rich Filters & Sorting**: Filter and sort across All, Pinned, `★ Starred`, native Groups, native Tags, official Workspaces, and Official Archive status.
+### 1. Native Instant Switching, FTS5 Full-Text Search & Custom Quick Tag Bar
+- **One-Click Native Switching**: Jumps directly to any conversation via Antigravity's native `toggle-conversation` protocol, paired with inline rename and quick Copy ID buttons.
+- **Full-Text FTS5 Search**: Uses Node.js built-in `node:sqlite` to search Antigravity's native `conversations_fts` index across titles, tags, message bodies, and code snippets in milliseconds.
+- **Customizable Quick Tag Filter Bar**: Click **`+ Quick Tags`** at the end of the `All / Pinned / Starred / Running` filter row to pin your most-used native tags (or create new ones) as one-click filter pills, combinable with Pinned or Starred; clicking any `#tag` badge on a session card also filters by that tag immediately.
 
 ### 2. 100% Official Native Conversation & Workspace Sync
-- **Direct `ConversationService` Integration**: Pinning, starring, inline renaming, native tags, official groups, archiving, and restoring write through official Antigravity APIs—100% synchronized with the native sidebar.
+- **Direct `ConversationService` Integration**: Pinning, starring, inline renaming, native tags, archiving, and restoring write directly through official Antigravity APIs—100% synchronized with the native sidebar. Focused around clean **Workspace + Tag** organization (legacy group IDs stay tucked inside a collapsed compatibility drawer in the edit dialog).
 - **Official Workspaces & New Conversations**: Automatically reads configured official workspaces for aggregated browsing and lets you start new conversations directly inside any chosen workspace.
 
-### 3. Cross-Workspace Transfer, Live Official Model Selection & Batch Management
-- **Cross-Workspace Transfer**: Transfer any conversation to another workspace and keep working without rebuilding context from scratch.
+### 3. Cross-Workspace Transfer, Current-Model Default & Batch Archive
+- **Cross-Workspace Transfer**: Transfer any conversation to another workspace with title, tags, pin/star states, summary, and transcript reference preserved, plus optional auto-archiving of the original session.
 - **Live Official Model Picker & Current-Model Default**: Both New Conversation and Cross-Workspace Transfer fetch the live list of official Antigravity models (with tier fallbacks), and the default option automatically detects and carries over the official model currently used by the source or active conversation instead of silently dropping back to `flash`.
-- **Batch Actions & Official Archive Box**: Select multiple sessions to batch-group, tag, star, archive, restore, or execute double-confirmed official permanent deletion.
+- **Batch Actions & Official Archive Box**: Select multiple sessions to batch-pin, star, tag, archive, restore, or execute double-confirmed official permanent deletion.
 
-### 4. Unified Azure Suite UI
+### 4. First-Run Interactive Onboarding & Unified Azure Suite UI
+- **5-Step Interactive Onboarding (`? Guide`)**: Automatically introduces core workflows on first launch with one-click live UI spotlighting and a floating return bar; completion state persists locally across sidecar port restarts and can be revisited anytime via **`? Guide`**.
 - **Neko Glass UI & Shared Theme Center**: Dark/light themes, custom glass dropdowns (`AzureSelect`), 6 official color presets + dual custom pickers + 4 shared slots, sidebar toggle, standalone `Web UI`, and GitHub Release update checks.
 
 <h2 id="architecture">
@@ -99,7 +106,7 @@ Batch-group, tag, star, archive, restore, or perform double-confirmed official p
 flowchart LR
   DB["Antigravity Native FTS5<br/>conversations_fts"] -->|"Read-Only Search (node:sqlite)"| C["Azure Corridor Sidecar"]
   SVC["Official Antigravity<br/>ConversationService &amp; Workspaces"] <-->|"100% Native Two-Way Sync"| C
-  C -->|"Native Protocol"| AGY["Switch / Create / Cross-Workspace Transfer"]
+  C -->|"Native Protocol"| AGY["Switch / Create with Model / Cross-Workspace Transfer"]
   C -->|"Two-Way Sync"| ARC["Official Archive Box<br/>Restore / Confirmed Permanent Delete"]
 ```
 
@@ -138,11 +145,12 @@ Restart or reload Antigravity (`Ctrl+R`), enable **Azure Corridor** in **Plugins
 </h2>
 
 <details open>
-<summary><strong>Click to inspect local data paths & shared Azure Suite configs</strong></summary>
+<summary><strong>Click to inspect local data paths &amp; shared Azure Suite configs</strong></summary>
 
 <br>
 
-- **Corridor UI Preferences**: `~/.gemini/azure-corridor/` (all session metadata, groups, tags, and archive state sync directly with Antigravity's native storage)
+- **Corridor UI Preferences (Quick Tags)**: `~/.gemini/azure-corridor/prefs.json` (all session metadata, tags, and archive state sync directly with Antigravity's native storage)
+- **First-Run Onboarding State**: `~/.gemini/azure-onboarding.json`
 - **Azure Suite Sidebar Visibility**: `~/.gemini/azure-sidebar-nav.json`
 - **Shared Azure Suite Theme**: `~/.gemini/azure-theme.json`
 
@@ -159,16 +167,16 @@ All **10 Azure Suite plugins** share a unified **Neko Glass UI**, synchronized *
 
 | Plugin | Repository | Core Capability |
 | --- | --- | --- |
-| ✦ **External Orchestrator** | [antigravity-external-orchestrator](https://github.com/A16Nights/antigravity-external-orchestrator) | Multi-provider external worker routing, custom profiles, circuit breaker & live monitoring |
-| 🪐 **Azure Orbit** | [antigravity-azure-orbit](https://github.com/A16Nights/antigravity-azure-orbit) | Mount external LLM APIs directly into Antigravity's native bottom-left model selector |
-| 🧭 **Azure Compass** | [antigravity-azure-compass](https://github.com/A16Nights/antigravity-azure-compass) | Agent mode presets, live context telemetry with auto /compact & Azure Suite sidebar hub |
-| 🏛️ **Azure Corridor** &nbsp;`✦ This Repo` | [antigravity-azure-corridor](https://github.com/A16Nights/antigravity-azure-corridor) | Pure-native conversation & workspace sync, FTS5 search, cross-workspace transfer, live official model picker & official archive |
-| 🌌 **Lanxi Memory** | [antigravity-lanxi-memory](https://github.com/A16Nights/antigravity-lanxi-memory) | 5-layer Markdown cognitive graph, CJK FTS5, tidal forgetting curves & starfield UI |
-| 💎 **Soul.md Studio** | [antigravity-soul-md](https://github.com/A16Nights/antigravity-soul-md) | Hot-swappable persona cards, workspace binding, external-model anchor & layered memory |
-| 💭 **Think-ZH** | [antigravity-think-zh](https://github.com/A16Nights/antigravity-think-zh) | Simplified Chinese / English reasoning switcher with dual-channel anti-drift hooks |
-| 🔮 **Azure Prism** | [antigravity-azure-prism](https://github.com/A16Nights/antigravity-azure-prism) | Native MCP App Chain-of-Thought viewer with keyless zero-token MT & LLM translation |
-| 🪄 **Azure Wand** | [antigravity-azure-wand](https://github.com/A16Nights/antigravity-azure-wand) | Low-intrusion Windows desktop & web automation with 15-state independent AI cursor, pack gallery & importer |
-| 🍃 **Azure Drop** | [antigravity-azure-drop](https://github.com/A16Nights/antigravity-azure-drop) | Zero-`app.asar` drag/paste native mention pills, lossless PNG capture, image thumbnails/lightbox & breadcrumb context menu |
+| ✦ **External Orchestrator — Multi-Model Worker Router** | [antigravity-external-orchestrator](https://github.com/A16Nights/antigravity-external-orchestrator) | Multi-provider external worker routing, custom profiles, circuit breaker & live monitoring |
+| 🪐 **Azure Orbit — Native Custom Model Mount** | [antigravity-azure-orbit](https://github.com/A16Nights/antigravity-azure-orbit) | Mount external LLM APIs directly into Antigravity's native bottom-left model selector |
+| 🧭 **Azure Compass — Agent Presets & Context Monitor** | [antigravity-azure-compass](https://github.com/A16Nights/antigravity-azure-compass) | Agent mode presets, live context telemetry with auto /compact & Azure Suite sidebar hub |
+| 🏛️ **Azure Corridor — Conversation & Workspace Manager** &nbsp;`✦ This Repo` | [antigravity-azure-corridor](https://github.com/A16Nights/antigravity-azure-corridor) | Pure-native conversation & workspace sync, FTS5 search, custom quick tags, cross-workspace transfer, live model picker & interactive onboarding |
+| 🌌 **Lanxi Memory — Cognitive Graph Memory** | [antigravity-lanxi-memory](https://github.com/A16Nights/antigravity-lanxi-memory) | 5-layer Markdown cognitive graph, CJK FTS5, tidal forgetting curves & starfield UI |
+| 💎 **Soul.md Studio — Persona Cards & Memory** | [antigravity-soul-md](https://github.com/A16Nights/antigravity-soul-md) | Hot-swappable persona cards, workspace binding, external-model anchor & layered memory |
+| 💭 **Think-ZH — Chinese Reasoning Switcher** | [antigravity-think-zh](https://github.com/A16Nights/antigravity-think-zh) | Simplified Chinese / English reasoning switcher with dual-channel anti-drift hooks |
+| 🔮 **Azure Prism — Chain-of-Thought Translator** | [antigravity-azure-prism](https://github.com/A16Nights/antigravity-azure-prism) | Native MCP App Chain-of-Thought viewer with keyless zero-token MT & LLM translation |
+| 🪄 **Azure Wand — Windows Desktop & Web Automation** | [antigravity-azure-wand](https://github.com/A16Nights/antigravity-azure-wand) | Low-intrusion Windows desktop & web automation with 15-state independent AI cursor, pack gallery & importer |
+| 🍃 **Azure Drop — Drag-Drop Files & Screenshot Helper** | [antigravity-azure-drop](https://github.com/A16Nights/antigravity-azure-drop) | Zero-`app.asar` drag/paste native mention pills, lossless PNG capture, image thumbnails/lightbox & breadcrumb context menu |
 
 ---
 

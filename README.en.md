@@ -86,8 +86,9 @@ First-run interactive walkthrough with live UI control spotlighting (reopen anyt
 - **Direct `ConversationService` Integration**: Pinning, starring, inline renaming, native tags, archiving, and restoring write directly through official Antigravity APIs—100% synchronized with the native sidebar. Focused around clean **Workspace + Tag** organization (legacy group IDs stay tucked inside a collapsed compatibility drawer in the edit dialog).
 - **Official Workspaces & New Conversations**: Automatically reads configured official workspaces for aggregated browsing and lets you start new conversations directly inside any chosen workspace.
 
-### 3. Cross-Workspace Transfer, Current-Model Default & Batch Archive
-- **Cross-Workspace Transfer**: Transfer any conversation to another workspace with title, tags, pin/star states, summary, and transcript reference preserved, plus optional auto-archiving of the original session.
+### 3. Enhanced Cross-Workspace Transfer, Zero-LLM Rescue Brief & Current-Model Default
+- **Enhanced Cross-Workspace Transfer**: Transfer any conversation to another workspace with title, tags, pin/star states, summary, and an auto-extracted zero-LLM progress digest (recent intents, modified files, latest check, and last reply) preserved, plus optional auto-archiving of the original session.
+- **Zero-LLM Redacted Rescue Brief (`🛟 Rescue Brief`)**: Extract a redacted Markdown handoff brief from any active or archived session in `<20ms` (model, actual tokens/cache hit rate, modified files, recent intents & progress, with common secrets automatically scrubbed), ready to copy or launch straight into a new continuation session.
 - **Live Official Model Picker & Current-Model Default**: Both New Conversation and Cross-Workspace Transfer fetch the live list of official Antigravity models (with tier fallbacks), and the default option automatically detects and carries over the official model currently used by the source or active conversation instead of silently dropping back to `flash`.
 - **Batch Actions & Official Archive Box**: Select multiple sessions to batch-pin, star, tag, archive, restore, or execute double-confirmed official permanent deletion.
 

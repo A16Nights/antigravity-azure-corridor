@@ -199,6 +199,12 @@ const server = http.createServer(async (req, res) => {
       return sendJson(res, 200, { ok: true, uiPrefs });
     }
 
+    if (req.method === "GET" && pathname === "/api/session/rescue") {
+      const id = String(url.searchParams.get("id") || "").trim();
+      const result = await store.getSessionRescueBrief(id);
+      return sendJson(res, 200, result);
+    }
+
     if (req.method === "POST" && pathname === "/api/session/create") {
       const body = await readBody(req);
       const result = await store.createNativeSession({

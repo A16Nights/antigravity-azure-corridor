@@ -470,6 +470,23 @@
     </div>
   </div>
 
+  <!-- 零 LLM 崩溃/卡死抢救简报弹窗 -->
+  <div class="modal-backdrop" id="rescueModal">
+    <div class="modal" style="max-width:560px;">
+      <h3>🛟 会话抢救 / 无缝续接简报</h3>
+      <div class="hint-box" id="rescueMeta">正在提取本地脱敏进度简报（零 LLM 消耗）...</div>
+      <div class="field">
+        <label>脱敏抢救简报（可直接复制粘贴到新对话，或一键带简报新建续接会话）</label>
+        <textarea id="rescueBriefText" rows="11" style="font-family:var(--mono,ui-monospace,monospace);font-size:11.5px;line-height:1.5;resize:vertical;"></textarea>
+      </div>
+      <div class="modal-foot">
+        <button class="btn" id="rescueClose">关闭</button>
+        <button class="btn" id="rescueCopy">📋 复制简报</button>
+        <button class="btn btn-primary" id="rescueNewSession">✨ 带简报新建会话</button>
+      </div>
+    </div>
+  </div>
+
   <!-- 通用输入/确认弹窗 -->
   <div class="modal-backdrop" id="dialogModal">
     <div class="modal">
@@ -1019,11 +1036,13 @@
               <button class="seg-btn icon-btn ${s.starred ? "on-fav" : ""}" data-act="star" data-id="${esc(s.id)}">★ 收藏</button>
               <button class="icon-btn" data-act="edit" data-id="${esc(s.id)}">编辑标签</button>
               <button class="icon-btn" data-act="transfer" data-id="${esc(s.id)}">转移工作区</button>
+              <button class="icon-btn" data-act="rescue" data-id="${esc(s.id)}" title="零 LLM 提取脱敏抢救简报，用于卡死/爆窗一键续聊">🛟 抢救简报</button>
               <button class="icon-btn" data-act="copy" data-id="${esc(s.id)}">复制ID</button>
               <button class="icon-btn" data-act="archive" data-id="${esc(s.id)}">归档</button>
             ` : `
               <button class="icon-btn" data-act="edit" data-id="${esc(s.id)}">编辑</button>
               <button class="icon-btn" data-act="transfer" data-id="${esc(s.id)}">转移工作区</button>
+              <button class="icon-btn" data-act="rescue" data-id="${esc(s.id)}" title="零 LLM 提取脱敏抢救简报，用于卡死/爆窗一键续聊">🛟 抢救简报</button>
               <button class="icon-btn" data-act="restore" data-id="${esc(s.id)}">恢复</button>
               <button class="icon-btn btn-danger" data-act="delete" data-id="${esc(s.id)}">永久删除</button>
             `}
@@ -1147,6 +1166,8 @@
             openEditModal(item);
           } else if (act === "transfer") {
             openTransferModal(item);
+          } else if (act === "rescue") {
+            openRescueModal(item);
           } else if (act === "delete") {
             openDeleteModal([id]);
           }
@@ -1253,6 +1274,49 @@
       $("transferArchiveSource").checked = true;
       $("transferModal").classList.add("show");
     }
+
+    let rescueSourceItem = null;
+    async function openRescueModal(item) {
+      rescueSourceItem = item;
+      $("rescueMeta").textContent = `正在读取「${item.title || item.id.slice(0, 8)}」的本地脱敏抢救简报...`;
+      $("rescueBriefText").value = "";
+      $("rescueModal").classList.add("show");
+      try {
+        const tok = new URLSearchParams(location.search).get("token") || "";
+        const headers = tok ? { "X-Codeium-Sidecar-Token": tok } : {};
+        const qs = new URLSearchParams({ id: item.id });
+        if (tok) qs.set("token", tok);
+        const r = await fetch(`/api/session/rescue?${qs.toString()}`, { headers });
+        const d = await r.json();
+        if (!r.ok || !d.ok) throw new Error(d.error || "提取失败");
+        $("rescueBriefText").value = d.brief || "";
+        const st = d.stats || {};
+        const tokStr = st.actualTokens ? `${Math.round(st.actualTokens / 1000)}k tokens` : "未知 Token";
+        const cacheStr = typeof st.cacheHitRate === "number" ? ` · 缓存 ${st.cacheHitRate}%` : "";
+        const modStr = st.lastModel ? ` · ${st.lastModel}` : "";
+        $("rescueMeta").textContent = d.found
+          ? `已提取本地脱敏简报（${st.totalSteps || 0} 步 · ${tokStr}${cacheStr}${modStr} · 改动文件 ${st.modifiedCount || 0} 个）`
+          : "该会话尚未生成本地 transcript.jsonl，已生成基础元信息交接框架。";
+      } catch (err) {
+        $("rescueMeta").textContent = `提取失败：${err?.message || err}`;
+      }
+    }
+    $("rescueClose").onclick = () => $("rescueModal").classList.remove("show");
+    $("rescueCopy").onclick = async () => {
+      const txt = $("rescueBriefText").value.trim();
+      if (!txt) return;
+      await navigator.clipboard.writeText(txt);
+      showToast("已复制脱敏抢救简报，可直接粘贴到新对话继续");
+    };
+    $("rescueNewSession").onclick = () => {
+      const txt = $("rescueBriefText").value.trim();
+      const src = rescueSourceItem;
+      $("rescueModal").classList.remove("show");
+      openNewSessionModal(src?.projectId || "");
+      if (src?.title) $("newSessionTitle").value = `${src.title}（续）`.slice(0, 120);
+      if (Array.isArray(src?.tags) && src.tags.length) $("newSessionTags").value = src.tags.join(", ");
+      if (txt) $("newSessionPrompt").value = txt;
+    };
 
     function openDeleteModal(ids) {
       state.deletingIds = ids;
